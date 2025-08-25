@@ -61,13 +61,6 @@ cor_inativa = (150, 150, 150)
 cor_ativa = (255, 255, 255)
 cor_input = cor_inativa
 
-def valor_slider_por_posicao(pos_mouse_x):
-    rel = max(0, min(pos_mouse_x - slider_x, slider_largura))
-    proporcao = rel / slider_largura
-    valor = round(proporcao * max_slider / passo) * passo
-    return valor
-
-
 # não mexer sem conhecimento
 cartas_mesa = []
 cartas_deck = ["AC","AD","AH","AS",
@@ -187,7 +180,7 @@ CARD_COLOR = (255, 255, 255)
 # 'nimbusroman', 'cantarell', 'opensymbol', 'symbola', 'dejavumathtexgyre', 'droidsansfallback', 'quicksand', 'quicksandmedium', 
 # 'standardsymbolsps', 'notomono', 'notocoloremoji']
 
-font = pygame.font.SysFont("cantarell", 20, bold=True) 
+font = pygame.font.SysFont("cantarell", 36, bold=True) 
 
 # Função para desenhar o texto centralizado
 def draw_text(text, color, rect, surface):
