@@ -88,62 +88,62 @@ aposta_minima = 0
 
 # classe Player, tanto para jogador e bot
 class Player:
-	def __init__(self,fichas,blind,cartas,e_bot):
-		self.nome = "Voce" if not e_bot else "Bot" 
-		self.fichas = fichas
-		self.blind = blind
-		self.cartas = cartas
-		self.e_bot = e_bot
-		self.aposta = 0
+    def __init__(self,fichas,blind,cartas,e_bot):
+        self.nome = "Voce" if not e_bot else "Bot" 
+        self.fichas = fichas
+        self.blind = blind
+        self.cartas = cartas
+        self.e_bot = e_bot
+        self.aposta = 0
 
-	def set_cartas(self,cartas):
-		self.cartas = cartas
+    def set_cartas(self,cartas):
+        self.cartas = cartas
 
-	def paga(self,bet):
-		if (bet > self.fichas):
-			self.aposta = self.fichas
-			self.fichas = 0
-			return self.fichas
-		self.fichas = self.fichas - bet
-		self.aposta = bet
-		return bet
+    def paga(self,bet):
+        if (bet > self.fichas):
+            self.aposta = self.fichas
+            self.fichas = 0
+            return self.fichas
+        self.fichas = self.fichas - bet
+        self.aposta = bet
+        return bet
 
-	def devolve_cartas(self):
-		cartas_d = self.cartas
-		self.cartas = None
-		return cartas_d
+    def devolve_cartas(self):
+        cartas_d = self.cartas
+        self.cartas = None
+        return cartas_d
 
 # Player("quantas fichas tem", "SB ou BB", "Cartas", "booleana do bot")
 jogador = Player(FICHAS/2,SMALL_BLIND,None, False) # info do jogador 
 bot = Player(FICHAS/2,BIG_BLIND,None, True) # info do bot
 
 def restart():
-	global jogador,bot,cartas_mesa,cartas_deck,fim_de_jogo,img_cartas_jogador,img_cartas_bot,imgs_mesa,fase,pote,pote_aux,e_pre_flop,aposta_minima
-	jogador = Player(FICHAS/2,SMALL_BLIND,None, False) # info do jogador 
-	bot = Player(FICHAS/2,BIG_BLIND,None, True) # info do bot
-	cartas_mesa = []
-	cartas_deck = ["AC","AD","AH","AS",
-	"2C","2D","2H","2S",
-	"3C","3D","3H","3S",
-	"4C","4D","4H","4S",
-	"5C","5D","5H","5S",
-	"6C","6D","6H","6S",
-	"7C","7D","7H","7S",
-	"8C","8D","8H","8S",
-	"9C","9D","9H","9S",
-	"10C","10D","10H","10S",
-	"JC","JD","JH","JS",
-	"QC","QD","QH","QS",
-	"KC","KD","KH","KS",]
-	fim_de_jogo = False
-	img_cartas_jogador = []
-	img_cartas_bot = []
-	imgs_mesa = []
-	fase = "inicio"
-	pote = 0
-	pote_aux = 0
-	e_pre_flop = True
-	aposta_minima = 0
+    global jogador,bot,cartas_mesa,cartas_deck,fim_de_jogo,img_cartas_jogador,img_cartas_bot,imgs_mesa,fase,pote,pote_aux,e_pre_flop,aposta_minima
+    jogador = Player(FICHAS/2,SMALL_BLIND,None, False) # info do jogador 
+    bot = Player(FICHAS/2,BIG_BLIND,None, True) # info do bot
+    cartas_mesa = []
+    cartas_deck = ["AC","AD","AH","AS",
+    "2C","2D","2H","2S",
+    "3C","3D","3H","3S",
+    "4C","4D","4H","4S",
+    "5C","5D","5H","5S",
+    "6C","6D","6H","6S",
+    "7C","7D","7H","7S",
+    "8C","8D","8H","8S",
+    "9C","9D","9H","9S",
+    "10C","10D","10H","10S",
+    "JC","JD","JH","JS",
+    "QC","QD","QH","QS",
+    "KC","KD","KH","KS",]
+    fim_de_jogo = False
+    img_cartas_jogador = []
+    img_cartas_bot = []
+    imgs_mesa = []
+    fase = "inicio"
+    pote = 0
+    pote_aux = 0
+    e_pre_flop = True
+    aposta_minima = 0
 
 # Inicialização
 pygame.init()
@@ -180,7 +180,7 @@ CARD_COLOR = (255, 255, 255)
 # 'nimbusroman', 'cantarell', 'opensymbol', 'symbola', 'dejavumathtexgyre', 'droidsansfallback', 'quicksand', 'quicksandmedium', 
 # 'standardsymbolsps', 'notomono', 'notocoloremoji']
 
-font = pygame.font.SysFont("cantarell", 36, bold=True) 
+font = pygame.font.SysFont("nimbusroman", 36, bold=True) 
 
 # Função para desenhar o texto centralizado
 def draw_text(text, color, rect, surface):
@@ -227,66 +227,66 @@ partida = True
 
 # Jogo
 def pre_flop():
-	global pote, e_pre_flop
-	e_pre_flop = True
-	# paga os SB e BB
-	pote += jogador.paga(jogador.blind)
-	pote += bot.paga(bot.blind)
+    global pote, e_pre_flop
+    e_pre_flop = True
+    # paga os SB e BB
+    pote += jogador.paga(jogador.blind)
+    pote += bot.paga(bot.blind)
 
-	# embaralha o deck
-	random.shuffle(cartas_deck)
+    # embaralha o deck
+    random.shuffle(cartas_deck)
 
-	# jogador recebe as cartas
-	jogador.set_cartas([cartas_deck.pop(),cartas_deck.pop()])
+    # jogador recebe as cartas
+    jogador.set_cartas([cartas_deck.pop(),cartas_deck.pop()])
 
-	# bot recebe as cartas
-	bot.set_cartas([cartas_deck.pop(),cartas_deck.pop()])
+    # bot recebe as cartas
+    bot.set_cartas([cartas_deck.pop(),cartas_deck.pop()])
 
-	# salva as cartas do player no vetor img_cartas_jogador (esta aqui porque fica bugando em outros lugares)
-	for nome in jogador.cartas:
-		img = pygame.image.load(f"img/cards/{nome}.png")
-		img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
-		img_cartas_jogador.append(img)
-		img_cartas_bot.append(baralho)
+    # salva as cartas do player no vetor img_cartas_jogador (esta aqui porque fica bugando em outros lugares)
+    for nome in jogador.cartas:
+        img = pygame.image.load(f"img/cards/{nome}.png")
+        img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
+        img_cartas_jogador.append(img)
+        img_cartas_bot.append(baralho)
 
 
-	# salva o fundo das cartas no vetor imgs_mesa, por enquanto todas viradas pra baixo
-	for i in range(5):
-		imgs_mesa.insert(i,baralho)
+    # salva o fundo das cartas no vetor imgs_mesa, por enquanto todas viradas pra baixo
+    for i in range(5):
+        imgs_mesa.insert(i,baralho)
 
-	# print pro jogada via terminal
-	print("(",jogador.fichas,") jogador:",jogador.cartas)
-	print("(",bot.fichas,") bot:",bot.cartas,"\n")
+    # print pro jogada via terminal
+    print("(",jogador.fichas,") jogador:",jogador.cartas)
+    print("(",bot.fichas,") bot:",bot.cartas,"\n")
 
-	log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-	if mostra_bot:
-		log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
+    log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
+    if mostra_bot:
+        log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
 
 
 
 def flop():
 
-	# da as cartas do flop
-	cartas_mesa.insert(0,cartas_deck.pop())
-	cartas_mesa.insert(1,cartas_deck.pop())
-	cartas_mesa.insert(2,cartas_deck.pop())
+    # da as cartas do flop
+    cartas_mesa.insert(0,cartas_deck.pop())
+    cartas_mesa.insert(1,cartas_deck.pop())
+    cartas_mesa.insert(2,cartas_deck.pop())
 
-	# modifica no vetor imgs_mesa as imagens das cartas do flop 
-	for i in range(3):
-		img = pygame.image.load(f"img/cards/{cartas_mesa[i]}.png")
-		img = pygame.transform.scale(img,(114,163)) # TODO ver tamanho da carta
-		imgs_mesa.insert(i,img)
+    # modifica no vetor imgs_mesa as imagens das cartas do flop 
+    for i in range(3):
+        img = pygame.image.load(f"img/cards/{cartas_mesa[i]}.png")
+        img = pygame.transform.scale(img,(114,163)) # TODO ver tamanho da carta
+        imgs_mesa.insert(i,img)
 
-	# print pro jogada via terminal
-	print("(",jogador.fichas,") jogador:",jogador.cartas)
-	print("(",bot.fichas,") bot:",bot.cartas)
-	print("(",pote,") mesa:",cartas_mesa,"\n")
+    # print pro jogada via terminal
+    print("(",jogador.fichas,") jogador:",jogador.cartas)
+    print("(",bot.fichas,") bot:",bot.cartas)
+    print("(",pote,") mesa:",cartas_mesa,"\n")
 
 
-	# log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-	# if mostra_bot:
-	# 	log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-	# log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
+    # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
+    # if mostra_bot:
+    #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
+    # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
 
 
 # posicao das cartas do bot pra animacao
@@ -300,43 +300,43 @@ cartas_bot_alvos = [
 ]
 
 def turn():
-	# da a carta do turn 
-	cartas_mesa.insert(3,cartas_deck.pop())
+    # da a carta do turn 
+    cartas_mesa.insert(3,cartas_deck.pop())
 
-	# modifica a imagem no vetor imgs_mesa
-	img = pygame.image.load(f"img/cards/{cartas_mesa[3]}.png")
-	img = pygame.transform.scale(img,(114,163)) # TODO ver tamanho da carta
-	imgs_mesa.insert(3,img)
+    # modifica a imagem no vetor imgs_mesa
+    img = pygame.image.load(f"img/cards/{cartas_mesa[3]}.png")
+    img = pygame.transform.scale(img,(114,163)) # TODO ver tamanho da carta
+    imgs_mesa.insert(3,img)
 
-	# print pro jogada via terminal
-	print("(",jogador.fichas,") jogador:",jogador.cartas)
-	print("(",bot.fichas,") bot:",bot.cartas)
-	print("(",pote,") mesa:",cartas_mesa,"\n")
+    # print pro jogada via terminal
+    print("(",jogador.fichas,") jogador:",jogador.cartas)
+    print("(",bot.fichas,") bot:",bot.cartas)
+    print("(",pote,") mesa:",cartas_mesa,"\n")
 
-	# log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-	# if mostra_bot:
-	#     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-	# log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
+    # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
+    # if mostra_bot:
+    #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
+    # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
 
 
 def river():
-	# da a carta do river
-	cartas_mesa.insert(4,cartas_deck.pop())
+    # da a carta do river
+    cartas_mesa.insert(4,cartas_deck.pop())
 
-	# modifica a imagem no vetor imgs_mesa
-	img = pygame.image.load(f"img/cards/{cartas_mesa[4]}.png")
-	img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
-	imgs_mesa.insert(4,img)
+    # modifica a imagem no vetor imgs_mesa
+    img = pygame.image.load(f"img/cards/{cartas_mesa[4]}.png")
+    img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
+    imgs_mesa.insert(4,img)
 
-	# print pro jogada via terminal
-	print("(",jogador.fichas,") jogador:",jogador.cartas)
-	print("(",bot.fichas,") bot:",bot.cartas)
-	print("(",pote,") mesa:",cartas_mesa,"\n")
+    # print pro jogada via terminal
+    print("(",jogador.fichas,") jogador:",jogador.cartas)
+    print("(",bot.fichas,") bot:",bot.cartas)
+    print("(",pote,") mesa:",cartas_mesa,"\n")
 
-	# log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-	# if mostra_bot:
-	#     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-	# log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
+    # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
+    # if mostra_bot:
+    #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
+    # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
 
 
 def verifica_perdedor():
@@ -386,93 +386,93 @@ def verifica_perdedor():
 
 # caso perdedor seja None indica que chegou ao showdown e precisa verificar quem ganha, se não perdedor foi quem deu fold
 def fim_rodada(perdedor=None):
-	global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux
-	log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-	log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-	log_mensagem(f"Mesa ({int(pote)}): {sorted(cartas_mesa)}")
+    global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux
+    log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
+    log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
+    log_mensagem(f"Mesa ({int(pote)}): {sorted(cartas_mesa)}")
 
-	# caso venha None precisa verificar
-	if perdedor == None:
-		for i in range(2):
-			img = pygame.image.load(f"img/cards/{bot.cartas[i]}.png")
-			img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
-			img_cartas_bot.insert(i,img)
-		perdedor = verifica_perdedor()
+    # caso venha None precisa verificar
+    if perdedor == None:
+        for i in range(2):
+            img = pygame.image.load(f"img/cards/{bot.cartas[i]}.png")
+            img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
+            img_cartas_bot.insert(i,img)
+        perdedor = verifica_perdedor()
 
-	# caso o verificador retornou None é empate e precisa dividir o pote
-	if perdedor == None:
-		bot.fichas = bot.fichas + int(pote/2)
-		jogador.fichas = jogador.fichas + int(pote/2)
+    # caso o verificador retornou None é empate e precisa dividir o pote
+    if perdedor == None:
+        bot.fichas = bot.fichas + int(pote/2)
+        jogador.fichas = jogador.fichas + int(pote/2)
 
-	# vitoria do bot
-	elif perdedor != bot:
-		bot.fichas = bot.fichas + pote
+    # vitoria do bot
+    elif perdedor != bot:
+        bot.fichas = bot.fichas + pote
 
-	# vitoria do jogador
-	else:
-		jogador.fichas = jogador.fichas + pote
+    # vitoria do jogador
+    else:
+        jogador.fichas = jogador.fichas + pote
 
-	# zera o pote
-	pote = 0
-	pote_aux = 0
-	if perdedor != None:
-	# print pro jogada via terminal
-		print(f"\nperdedor {perdedor.nome}\n")
-		log_mensagem(f"{perdedor.nome.upper()} foi perdedor")
-	else:
-		print("\nEMPATE\n")
-		log_mensagem("EMPATE")
-	
-	# TODO mensagem que mostra vencedor
+    # zera o pote
+    pote = 0
+    pote_aux = 0
+    if perdedor != None:
+    # print pro jogada via terminal
+        print(f"\nperdedor {perdedor.nome}\n")
+        log_mensagem(f"{perdedor.nome.upper()} foi perdedor")
+    else:
+        print("\nEMPATE\n")
+        log_mensagem("EMPATE")
+    
+    # TODO mensagem que mostra vencedor
 
-	# troca categoria do blind (SB vira BB e BB vira SB)
-	if jogador.blind == BIG_BLIND:
-		jogador.blind = SMALL_BLIND
-		bot.blind = BIG_BLIND
-	else:
-		jogador.blind = BIG_BLIND
-		bot.blind = SMALL_BLIND
+    # troca categoria do blind (SB vira BB e BB vira SB)
+    if jogador.blind == BIG_BLIND:
+        jogador.blind = SMALL_BLIND
+        bot.blind = BIG_BLIND
+    else:
+        jogador.blind = BIG_BLIND
+        bot.blind = SMALL_BLIND
 
-	# retorna as cartas ao deck e limpa as cartas da mesa
-	cartas_deck += jogador.devolve_cartas() + bot.devolve_cartas() + cartas_mesa
-	cartas_mesa = []
+    # retorna as cartas ao deck e limpa as cartas da mesa
+    cartas_deck += jogador.devolve_cartas() + bot.devolve_cartas() + cartas_mesa
+    cartas_mesa = []
 
-	# limpa as cartas dos players
-	jogador.set_cartas([None, None])
-	bot.set_cartas([None, None])
+    # limpa as cartas dos players
+    jogador.set_cartas([None, None])
+    bot.set_cartas([None, None])
 
-	# serve pra limpar as animações (não mexer)
-	img_cartas_jogador.clear()
-	img_cartas_bot.clear()
-	imgs_mesa.clear()
-	carta_posicoes_bot[:] = [pygame.Vector2(baralho_pos) for _ in range(2)]
-	cartas_bot_movendo[:] = [True, True]
-	carta_posicoes_player[:] = [pygame.Vector2(baralho_pos) for _ in range(2)]
-	cartas_player_movendo[:] = [True, True]
-	carta_posicoes_mesa[:] = [pygame.Vector2(baralho_pos) for _ in range(5)]
-	cartas_mesa_movendo[:] = [True,True,True,True,True]
+    # serve pra limpar as animações (não mexer)
+    img_cartas_jogador.clear()
+    img_cartas_bot.clear()
+    imgs_mesa.clear()
+    carta_posicoes_bot[:] = [pygame.Vector2(baralho_pos) for _ in range(2)]
+    cartas_bot_movendo[:] = [True, True]
+    carta_posicoes_player[:] = [pygame.Vector2(baralho_pos) for _ in range(2)]
+    cartas_player_movendo[:] = [True, True]
+    carta_posicoes_mesa[:] = [pygame.Vector2(baralho_pos) for _ in range(5)]
+    cartas_mesa_movendo[:] = [True,True,True,True,True]
 
-	# print pro jogada via terminal
-	# print(f"bot é {"BB" if bot.blind == BIG_BLIND else "SB"}")
-	# print(f"jogador é {"BB" if jogador.blind == BIG_BLIND else "SB"}")
+    # print pro jogada via terminal
+    # print(f"bot é {"BB" if bot.blind == BIG_BLIND else "SB"}")
+    # print(f"jogador é {"BB" if jogador.blind == BIG_BLIND else "SB"}")
 
 
 def calcula_aposta(): #TODO como o bot calcula a aposta
-	return 100
+    return 100
 
 def formula_d(): # TODO formula
-	return 51
+    return 51
 
 def acao_bot(houve_aposta): # TODO acho que esta certo
-	d = formula_d()
-	if houve_aposta and d <= VALOR_MINIMO_D:
-		return ("fold",0)
-	elif houve_aposta and d > VALOR_MINIMO_D:
-		return ("call",jogador.aposta)
-	elif not houve_aposta and d > VALOR_MINIMO_D:
-		return ("bet",calcula_aposta())
-	elif not houve_aposta and d <= VALOR_MINIMO_D:
-		return ("check",0)
+    d = formula_d()
+    if houve_aposta and d <= VALOR_MINIMO_D:
+        return ("fold",0)
+    elif houve_aposta and d > VALOR_MINIMO_D:
+        return ("call",jogador.aposta)
+    elif not houve_aposta and d > VALOR_MINIMO_D:
+        return ("bet",calcula_aposta())
+    elif not houve_aposta and d <= VALOR_MINIMO_D:
+        return ("check",0)
 
 def desenhar_interface():
     screen.fill((0, 100, 0))
@@ -503,15 +503,15 @@ def desenhar_interface():
 
     # Call / Check botão
     if alerta_aposta:
-    	cor1 = GREEN if (alerta_aposta and botao_call.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]) else BLUE
-    	pygame.draw.rect(screen, cor1, botao_call)
-    	texto1 = fonte_botao.render("call", True, WHITE)
-    	screen.blit(texto1, (botao_call.x + 50, botao_call.y + 15))
+        cor1 = GREEN if (alerta_aposta and botao_call.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]) else BLUE
+        pygame.draw.rect(screen, cor1, botao_call)
+        texto1 = fonte_botao.render("call", True, WHITE)
+        screen.blit(texto1, (botao_call.x + 50, botao_call.y + 15))
     else:
-    	cor1 = GREEN if (not alerta_aposta and botao_check.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]) else BLUE
-    	pygame.draw.rect(screen, cor1, botao_check)
-    	texto1 = fonte_botao.render("check", True, WHITE)
-    	screen.blit(texto1, (botao_check.x + 50, botao_check.y + 15))
+        cor1 = GREEN if (not alerta_aposta and botao_check.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]) else BLUE
+        pygame.draw.rect(screen, cor1, botao_check)
+        texto1 = fonte_botao.render("check", True, WHITE)
+        screen.blit(texto1, (botao_check.x + 50, botao_check.y + 15))
     
     # Fold botão
     cor2 = GREEN if botao_fold.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0] else BLUE
@@ -539,7 +539,7 @@ def desenhar_interface():
     # Baralho
     
     for i in range(8):
-    	screen.blit(baralho, (table_rect.centerx + 100 + i, dealer_rect.left - 200 - i))
+        screen.blit(baralho, (table_rect.centerx + 100 + i, dealer_rect.left - 200 - i))
     screen.blit(baralho, baralho_pos)
 
 
@@ -588,8 +588,8 @@ def processar_eventos():
                 try:
                     valor = int(input_texto)
                     while valor < aposta_minima:
-                    	input_texto = f"Min {aposta_minima}"
-                    	valor = int(input_texto)
+                        input_texto = f"Min {aposta_minima}"
+                        valor = int(input_texto)
                     acao = "bet"
                     espera_jogador = False
                     input_texto = "" if aposta_minima == 0 else f"Min {aposta_minima}"
@@ -621,109 +621,109 @@ def processar_eventos():
 
 
 def acao_jogador():
-	global espera_jogador, arrastando
-	espera_jogador = True
-	while espera_jogador:
-		processar_eventos()
-		desenhar_interface()
-		pygame.display.flip()
-		clock.tick(hertz)
-	return acao, valor
+    global espera_jogador, arrastando
+    espera_jogador = True
+    while espera_jogador:
+        processar_eventos()
+        desenhar_interface()
+        pygame.display.flip()
+        clock.tick(hertz)
+    return acao, valor
 
 
 alerta_aposta = False
 
 
 def jogadas(jogador1, jogador2):
-	global pote, pote_aux, e_pre_flop, aposta_minima,alerta_aposta, acao, valor
-	if e_pre_flop:
-		aposta_minima = BIG_BLIND - SMALL_BLIND
-	# Determinar ordem dos jogadores com base no SB
-	if jogador1.blind == SMALL_BLIND:
-	    ordem = [jogador1, jogador2]
-	else:
-	    ordem = [jogador2, jogador1]
+    global pote, pote_aux, e_pre_flop, aposta_minima,alerta_aposta, acao, valor
+    if e_pre_flop:
+        aposta_minima = BIG_BLIND - SMALL_BLIND
+    # Determinar ordem dos jogadores com base no SB
+    if jogador1.blind == SMALL_BLIND:
+        ordem = [jogador1, jogador2]
+    else:
+        ordem = [jogador2, jogador1]
 
-	rodada_finalizada = False
-	
-	while not rodada_finalizada:
+    rodada_finalizada = False
+    
+    while not rodada_finalizada:
 
-		for jogador_vez in ordem:
-			# Exibir estado (para debug ou exibição futura)
-			print(f"\n{jogador_vez.nome} ({'BOT' if jogador_vez.e_bot else 'JOGADOR'})")
-			print(f"Fichas: {jogador_vez.fichas}, Aposta atual: {jogador_vez.aposta}, Pote: {pote}")
+        for jogador_vez in ordem:
+            # Exibir estado (para debug ou exibição futura)
+            print(f"\n{jogador_vez.nome} ({'BOT' if jogador_vez.e_bot else 'JOGADOR'})")
+            print(f"Fichas: {jogador_vez.fichas}, Aposta atual: {jogador_vez.aposta}, Pote: {pote}")
 
-			# Determinar ação
-			if jogador1.aposta != jogador2.aposta:
-				alerta_aposta = True
+            # Determinar ação
+            if jogador1.aposta != jogador2.aposta:
+                alerta_aposta = True
 
-			# all-in pass
-			if jogador_vez.fichas == 0:
-				acao = "call"
+            # all-in pass
+            if jogador_vez.fichas == 0:
+                acao = "call"
 
-			elif jogador_vez.e_bot:
-				acao, valor = acao_bot(alerta_aposta)
-			else:
-				acao, valor = acao_jogador()
+            elif jogador_vez.e_bot:
+                acao, valor = acao_bot(alerta_aposta)
+            else:
+                acao, valor = acao_jogador()
 
-			
-			# Tratar ação
-			if acao == "fold":
-				print(f"{jogador_vez.nome} desistiu.")
-				log_mensagem(f"{jogador_vez.nome} desistiu.")
-				pote += pote_aux
-				pote_aux = 0
-				perdedor = jogador_vez
-				return jogador_vez # fim da rodada
+            
+            # Tratar ação
+            if acao == "fold":
+                print(f"{jogador_vez.nome} desistiu.")
+                log_mensagem(f"{jogador_vez.nome} desistiu.")
+                pote += pote_aux
+                pote_aux = 0
+                perdedor = jogador_vez
+                return jogador_vez # fim da rodada
 
-			elif acao == "check":
-			    # Só pode dar check se as apostas forem iguais
-			    maior_aposta = max(jogador1.aposta, jogador2.aposta)
-			    if jogador_vez.aposta == maior_aposta:
-			        print(f"{jogador_vez.nome} deu check.")
-			        log_mensagem(f"{jogador_vez.nome} passou a vez. (check)")
-			
-			elif acao == "call":
-				maior_aposta = max(jogador1.aposta, jogador2.aposta)
-				diferenca = maior_aposta - jogador_vez.aposta
-				if diferenca > jogador_vez.fichas:
-					diferenca = jogador_vez.fichas  # all-in
-				jogador_vez.fichas -= diferenca
-				jogador_vez.aposta += diferenca
-				pote_aux += diferenca
-				print(f"{jogador_vez.nome} pagou {diferenca}. (call)")
-				log_mensagem(f"{jogador_vez.nome} pagou {diferenca}. (call)")
-				if e_pre_flop:
-					e_pre_flop = False
-					alerta_aposta = False
-					aposta_minima = 0
-				else:
-					rodada_finalizada = True
-					break
+            elif acao == "check":
+                # Só pode dar check se as apostas forem iguais
+                maior_aposta = max(jogador1.aposta, jogador2.aposta)
+                if jogador_vez.aposta == maior_aposta:
+                    print(f"{jogador_vez.nome} deu check.")
+                    log_mensagem(f"{jogador_vez.nome} passou a vez. (check)")
+            
+            elif acao == "call":
+                maior_aposta = max(jogador1.aposta, jogador2.aposta)
+                diferenca = maior_aposta - jogador_vez.aposta
+                if diferenca > jogador_vez.fichas:
+                    diferenca = jogador_vez.fichas  # all-in
+                jogador_vez.fichas -= diferenca
+                jogador_vez.aposta += diferenca
+                pote_aux += diferenca
+                print(f"{jogador_vez.nome} pagou {diferenca}. (call)")
+                log_mensagem(f"{jogador_vez.nome} pagou {diferenca}. (call)")
+                if e_pre_flop:
+                    e_pre_flop = False
+                    alerta_aposta = False
+                    aposta_minima = 0
+                else:
+                    rodada_finalizada = True
+                    break
 
-			elif acao == "bet":
-				if valor > jogador_vez.fichas:
-				    valor = jogador_vez.fichas  # all-in
-				jogador_vez.fichas -= valor
-				jogador_vez.aposta += valor
-				pote_aux += valor
-				print(f"{jogador_vez.nome} apostou {valor}. (bet)")
-				log_mensagem(f"{jogador_vez.nome} apostou {valor}. (bet)")
+            elif acao == "bet":
+                if valor > jogador_vez.fichas:
+                    valor = jogador_vez.fichas  # all-in
+                jogador_vez.fichas -= valor
+                jogador_vez.aposta += valor
+                pote_aux += valor
+                print(f"{jogador_vez.nome} apostou {valor}. (bet)")
+                log_mensagem(f"{jogador_vez.nome} apostou {valor}. (bet)")
 
-		# Condição de parada da rodada: apostas iguais e ninguém apostou de novo
-		if jogador1.aposta == jogador2.aposta:
-		    rodada_finalizada = True
+        # Condição de parada da rodada: apostas iguais e ninguém apostou de novo
+        if jogador1.aposta == jogador2.aposta:
+            rodada_finalizada = True
 
-	# Zera as apostas da rodada
-	for jogador in [jogador1, jogador2]:
-		alerta_aposta = False
-		jogador.aposta = 0
-	log_mensagem("")
-	log_mensagem("")
-	
-	# Ao fim da rodada, atualiza o pote
-	pote += pote_aux
-	pote_aux = 0
+    # Zera as apostas da rodada
+    for jogador in [jogador1, jogador2]:
+        alerta_aposta = False
+        jogador.aposta = 0
+    log_mensagem("")
+    log_mensagem("")
+    
+    # Ao fim da rodada, atualiza o pote
+    pote += pote_aux
+    pote_aux = 0
 
 
 def desenha_log():
@@ -755,29 +755,29 @@ cartas_player_movendo = [True, True]
 
 # função de animaçao de dar as cartas com as cartas do bot fechada 
 def ani_cartas_bot_fechado():
-	# Bot
-	for i in range(2):
-		if cartas_bot_movendo[i]:
-			direcao = cartas_bot_alvos[i] - carta_posicoes_bot[i]
-			if direcao.length() < 1:
-				cartas_bot_movendo[i] = False
-				carta_posicoes_bot[i] = cartas_bot_alvos[i]
-			else:
-				direcao = direcao.normalize()
-				carta_posicoes_bot[i] += direcao * velocidade * delta_time
-		screen.blit(baralho, carta_posicoes_bot[i].xy)
+    # Bot
+    for i in range(2):
+        if cartas_bot_movendo[i]:
+            direcao = cartas_bot_alvos[i] - carta_posicoes_bot[i]
+            if direcao.length() < 1:
+                cartas_bot_movendo[i] = False
+                carta_posicoes_bot[i] = cartas_bot_alvos[i]
+            else:
+                direcao = direcao.normalize()
+                carta_posicoes_bot[i] += direcao * velocidade * delta_time
+        screen.blit(baralho, carta_posicoes_bot[i].xy)
 
-	# Jogador
-	for i in range(2):
-		if cartas_player_movendo[i]:
-			direcao = cartas_player_alvos[i] - carta_posicoes_player[i]
-			if direcao.length() < 1:
-				cartas_player_movendo[i] = False
-				carta_posicoes_player[i] = cartas_player_alvos[i]
-			else:
-				direcao = direcao.normalize()
-				carta_posicoes_player[i] += direcao * velocidade * delta_time
-		screen.blit(img_cartas_jogador[i], carta_posicoes_player[i].xy)
+    # Jogador
+    for i in range(2):
+        if cartas_player_movendo[i]:
+            direcao = cartas_player_alvos[i] - carta_posicoes_player[i]
+            if direcao.length() < 1:
+                cartas_player_movendo[i] = False
+                carta_posicoes_player[i] = cartas_player_alvos[i]
+            else:
+                direcao = direcao.normalize()
+                carta_posicoes_player[i] += direcao * velocidade * delta_time
+        screen.blit(img_cartas_jogador[i], carta_posicoes_player[i].xy)
 
 carta_posicoes_mesa = [pygame.Vector2(baralho_pos) for i in range(5)]
 cartas_mesa_alvos = [pygame.Vector2(table_rect.centerx - 2 * DISTANCIA_MESA_D_USUARIO - 114 * 2.5 + i * (114 +DISTANCIA_MESA_D_USUARIO), table_rect.centery - DISTANCIA_MESA_D_USUARIO - 163)for i in range(5)]
@@ -785,114 +785,114 @@ cartas_mesa_movendo = [True,True,True,True,True]
 
 # função de dar as cartas 
 def ani_cartas_mesa_flop():
-	for i in range(5):
-		if cartas_mesa_movendo[i]:
-			direcao = cartas_mesa_alvos[i] - carta_posicoes_mesa[i]
-			if direcao.length() < 1:
-				cartas_mesa_movendo[i] = False
-				carta_posicoes_mesa[i] = cartas_mesa_alvos[i]
-			else:
-				direcao = direcao.normalize()
-				carta_posicoes_mesa[i] += direcao * velocidade * delta_time
-		screen.blit(baralho, carta_posicoes_mesa[i].xy)
+    for i in range(5):
+        if cartas_mesa_movendo[i]:
+            direcao = cartas_mesa_alvos[i] - carta_posicoes_mesa[i]
+            if direcao.length() < 1:
+                cartas_mesa_movendo[i] = False
+                carta_posicoes_mesa[i] = cartas_mesa_alvos[i]
+            else:
+                direcao = direcao.normalize()
+                carta_posicoes_mesa[i] += direcao * velocidade * delta_time
+        screen.blit(baralho, carta_posicoes_mesa[i].xy)
 
 # precisa disso porque animação != ficar aparecendo
 def sempre_cartas_mao():
-	for i in range(2):
-		screen.blit(img_cartas_jogador[i], carta_posicoes_player[i].xy)
-		screen.blit(img_cartas_bot[i], carta_posicoes_bot[i].xy)
+    for i in range(2):
+        screen.blit(img_cartas_jogador[i], carta_posicoes_player[i].xy)
+        screen.blit(img_cartas_bot[i], carta_posicoes_bot[i].xy)
 
 def sempre_flop():
-	for i in range(5):
-		screen.blit(imgs_mesa[i], carta_posicoes_mesa[i].xy)
+    for i in range(5):
+        screen.blit(imgs_mesa[i], carta_posicoes_mesa[i].xy)
 
 def sempre_turn():
-	screen.blit(imgs_mesa[3], carta_posicoes_mesa[3].xy)
+    screen.blit(imgs_mesa[3], carta_posicoes_mesa[3].xy)
 
 def sempre_river():
-	screen.blit(imgs_mesa[4], carta_posicoes_mesa[4].xy)
+    screen.blit(imgs_mesa[4], carta_posicoes_mesa[4].xy)
 
 perdedor = None 
 
 while running:
-	processar_eventos()
+    processar_eventos()
 
-	mouse_pos = pygame.mouse.get_pos()
-	mouse_pressionado = pygame.mouse.get_pressed()[0]
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_pressionado = pygame.mouse.get_pressed()[0]
 
-	# distribui as cartas e o pote
-	if fase == "inicio":
-		if jogador.fichas == 0 or bot.fichas == 0: # TODO indica que houve allin e precisa de tela de vitoria avassaladora de alguem 
-			log_mensagem("")
-			log_mensagem("")
-			log_mensagem("")
-			log_mensagem("")
-			log_mensagem("")
-			restart()
-		pre_flop()
-		fase = "pre_flop_ani"
+    # distribui as cartas e o pote
+    if fase == "inicio":
+        if jogador.fichas == 0 or bot.fichas == 0: # TODO indica que houve allin e precisa de tela de vitoria avassaladora de alguem 
+            log_mensagem("")
+            log_mensagem("")
+            log_mensagem("")
+            log_mensagem("")
+            log_mensagem("")
+            restart()
+        pre_flop()
+        fase = "pre_flop_ani"
 
-	# serve pra esperar a animação
-	elif fase == "pre_flop_ani":
-		ani_cartas_bot_fechado()
-		if all(not movendo for movendo in cartas_bot_movendo + cartas_player_movendo):
-			fase = "pre_flop"
+    # serve pra esperar a animação
+    elif fase == "pre_flop_ani":
+        ani_cartas_bot_fechado()
+        if all(not movendo for movendo in cartas_bot_movendo + cartas_player_movendo):
+            fase = "pre_flop"
 
-	elif fase == "pre_flop":
-		bundao = jogadas(jogador,bot)
-		if bundao != None:
-			fim_rodada(bundao)
-			fase = "inicio"
-		else:
-			flop()
-			fase = "flop_ani" 
+    elif fase == "pre_flop":
+        bundao = jogadas(jogador,bot)
+        if bundao != None:
+            fim_rodada(bundao)
+            fase = "inicio"
+        else:
+            flop()
+            fase = "flop_ani" 
 
-	# serve pra esperar a animação
-	elif fase == "flop_ani":
-		ani_cartas_mesa_flop()
-		if all(not movendo for movendo in cartas_mesa_movendo):
-			fase = "flop"
+    # serve pra esperar a animação
+    elif fase == "flop_ani":
+        ani_cartas_mesa_flop()
+        if all(not movendo for movendo in cartas_mesa_movendo):
+            fase = "flop"
 
-	elif fase == "flop":
-		bundao = jogadas(jogador,bot)
-		if bundao != None:
-			fim_rodada(bundao)
-			fase = "inicio"
-		else:
-			turn()
-			fase = "turn" 
-		
+    elif fase == "flop":
+        bundao = jogadas(jogador,bot)
+        if bundao != None:
+            fim_rodada(bundao)
+            fase = "inicio"
+        else:
+            turn()
+            fase = "turn" 
+        
 
-	elif fase == "turn":
-		bundao = jogadas(jogador,bot)
-		if bundao != None:
-			fim_rodada(bundao)
-			fase = "inicio"
-		else:
-			river()
-			fase = "river"
-		
+    elif fase == "turn":
+        bundao = jogadas(jogador,bot)
+        if bundao != None:
+            fim_rodada(bundao)
+            fase = "inicio"
+        else:
+            river()
+            fase = "river"
+        
 
-	elif fase == "river":
-		bundao = jogadas(jogador,bot)
-		fim_rodada(bundao)
-		fase = "inicio"
+    elif fase == "river":
+        bundao = jogadas(jogador,bot)
+        fim_rodada(bundao)
+        fase = "inicio"
 
-	if img_cartas_jogador:
-		sempre_cartas_mao()
-	
-	if imgs_mesa:
-		sempre_flop()
+    if img_cartas_jogador:
+        sempre_cartas_mao()
+    
+    if imgs_mesa:
+        sempre_flop()
 
-	desenhar_interface()
+    desenhar_interface()
 
-	# Eventos
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			running = False
+    # Eventos
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-	# Atualizar tela
-	pygame.display.flip()
-	delta_time = clock.tick(hertz) / 1000
+    # Atualizar tela
+    pygame.display.flip()
+    delta_time = clock.tick(hertz) / 1000
 pygame.quit()
 sys.exit()
