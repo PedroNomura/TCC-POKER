@@ -3,18 +3,35 @@ import sys
 import random
 from pokerlib.enums import Rank, Suit
 from pokerlib import HandParser
+import cv2
+import time
+from deepface import DeepFace
+import numpy as np
 
 # TODO arrumar os logs pra ficar melhor
-# TODO fazer alguns bangs vizuais
+# TODO fazer alguns bangs visuais
 # TODO implementar a bomba da IA (SOON)
+    # pro monte carlo - jogador.cartas + cartas_mesa + bot.cartas (pro monte carlo vai passar as cartas do player? tipo não é justo)
 # TODO revisar codigo/bugs (VERY SOON)
 
 hertz = 144 # TODO esse valor tem que ser a taxa de atualização do seu monitor (hertz)
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-BOT_RECONHER = False # ativar o reconehcimento (SOON) 
+BOT_RECONHER = True # ativar o reconehcimento (SOON) 
 VALOR_MINIMO_D = 50
+PESOS_EMOCAO = {
+    "happy": 2,
+    "sad": 1.5,
+    "angry": 1.5,
+    "fear": 1,
+    "disgust": 1,
+    "surprise": 1
+}
+
+# pré-carrega modelo de emoção
+preload_frame = np.zeros((100, 100, 3), dtype=np.uint8)
+DeepFace.analyze(preload_frame, actions=["emotion"], enforce_detection=False)
 
 # pra estilo
 DISTANCIA_MESA_D_USUARIO = 10 # distancia dos detalhes 
@@ -147,6 +164,8 @@ def restart():
 
 # Inicialização
 pygame.init()
+cap = cv2.VideoCapture(0)
+time.sleep(0.5)
 
 # chat que vez mas para quebrar o texto (auxiliar e opcional)
 def draw_multiline_text(text, color, rect, surface, line_height=30):
@@ -180,7 +199,7 @@ CARD_COLOR = (255, 255, 255)
 # 'nimbusroman', 'cantarell', 'opensymbol', 'symbola', 'dejavumathtexgyre', 'droidsansfallback', 'quicksand', 'quicksandmedium', 
 # 'standardsymbolsps', 'notomono', 'notocoloremoji']
 
-font = pygame.font.SysFont("nimbusroman", 36, bold=True) 
+font = pygame.font.SysFont("Arial", 20, bold=True) 
 
 # Função para desenhar o texto centralizado
 def draw_text(text, color, rect, surface):
@@ -457,10 +476,62 @@ def fim_rodada(perdedor=None):
     # print(f"jogador é {"BB" if jogador.blind == BIG_BLIND else "SB"}")
 
 
+def pegar_probabilidades_webcam_tempo(cap, duracao=5, pesos=PESOS_EMOCAO):
+    if not cap.isOpened():
+        print("Erro: webcam não está aberta.")
+        return None
+
+    inicio = time.time()
+    lista_probs = []
+    frame_count = 0
+
+    while time.time() - inicio < duracao:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        try:
+            resultado = DeepFace.analyze(frame, actions=["emotion"], enforce_detection=True)
+            if isinstance(resultado, list):
+                resultado = resultado[0]
+
+            # Ignora o primeiro frame para evitar atraso inicial
+            if frame_count > 0:
+                # Remove "neutral" antes de armazenar
+                emo_frame = {k: v for k, v in resultado["emotion"].items() if k != "neutral"}
+                lista_probs.append(emo_frame)
+
+            frame_count += 1
+
+        except Exception as e:
+            print("Erro em um frame:", e)
+
+    if not lista_probs:
+        return None
+
+    # calcular média das probabilidades (ignorando "neutral")
+    chaves = lista_probs[0].keys()
+    medias = {chave: np.mean([d[chave] for d in lista_probs]) for chave in chaves}
+
+    # aplicar pesos se fornecidos
+    if pesos:
+        for emo, peso in pesos.items():
+            if emo in medias:
+                medias[emo] *= peso
+
+    return medias
+
 def calcula_aposta(): #TODO como o bot calcula a aposta
     return 100
 
 def formula_d(): # TODO formula
+    if BOT_RECONHER:
+        probs = pegar_probabilidades_webcam_tempo(cap, duracao=3, pesos=PESOS_EMOCAO)
+        maior_emocao = max(probs, key=probs.get)
+    else:
+        maior_emocao = "neutral"
+    log_mensagem(f"Jogador está {maior_emocao}")
+    
     return 51
 
 def acao_bot(houve_aposta): # TODO acho que esta certo
@@ -499,7 +570,7 @@ def desenhar_interface():
     draw_multiline_text(f"{int(jogador.fichas)}\nAposta: {jogador.aposta}", WHITE, player_chips_bet_rect, screen)
 
     # Botões
-    fonte_botao = pygame.font.SysFont(None, 36)
+    fonte_botao = pygame.font.SysFont("Arial", 20)
 
     # Call / Check botão
     if alerta_aposta:
@@ -562,6 +633,7 @@ def processar_eventos():
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            cap.release()
             pygame.quit()
             sys.exit()
 
