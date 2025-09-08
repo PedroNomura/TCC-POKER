@@ -18,7 +18,8 @@ hertz = 144 # TODO esse valor tem que ser a taxa de atualização do seu monitor
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-BOT_RECONHER = True # ativar o reconehcimento (SOON) 
+BOT_RECONHER = True # ativar o reconhecimento (SOON) 
+ITERACOES_MONTE_CARLO = 10000
 VALOR_MINIMO_D = 50
 PESOS_EMOCAO = {
     "happy": 2,
@@ -62,7 +63,7 @@ BIG_BLIND = 100 # valor do big blind
 SMALL_BLIND = 50 # valor do small blind
 
 # Tamanho da tela
-WIDTH, HEIGHT = 1700, 860 # TODO ver se ta bom 
+WIDTH, HEIGHT = 1500, 760 # TODO ver se ta bom # Mudei 1700, 860 
 #WIDTH, HEIGHT = 1920, 1080 # (1920x1080 pra tela cheia)
 
 # botoes e caixa de texto
@@ -393,9 +394,11 @@ def verifica_perdedor():
     7: "FOUROFAKIND",
     8: "STRAIGHTFLUSH"
     }
-    print(f"\n\njogador {tipo_mao[hand_jogador.handenum]} com {sorted(bot.cartas+cartas_mesa)}\nbot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas+cartas_mesa)}\n\n")
+
+    print(f"\n\njogador {tipo_mao[hand_jogador.handenum]} com {sorted(jogador.cartas+cartas_mesa)}\nbot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas+cartas_mesa)}\n\n")
     log_mensagem(f"jogador {tipo_mao[hand_jogador.handenum]}")
     log_mensagem(f"bot {tipo_mao[hand_bot.handenum]}")
+    
     if hand_jogador == hand_bot:
         return None
     elif hand_jogador > hand_bot:
@@ -453,7 +456,7 @@ def fim_rodada(perdedor=None):
         bot.blind = SMALL_BLIND
 
     # retorna as cartas ao deck e limpa as cartas da mesa
-    cartas_deck += jogador.devolve_cartas() + bot.devolve_cartas() + cartas_mesa
+    cartas_deck += jogador.devolve_cartas() + bot.devolve_cartas() + cartas_mesa 
     cartas_mesa = []
 
     # limpa as cartas dos players
@@ -521,10 +524,61 @@ def pegar_probabilidades_webcam_tempo(cap, duracao=5, pesos=PESOS_EMOCAO):
 
     return medias
 
+def MC_verifica_perdedor(MC_cartas_jogador, MC_mesa):
+    biblis = {
+            'A': Rank.ACE, '2': Rank.TWO, '3': Rank.THREE, 
+            '4': Rank.FOUR, '5': Rank.FIVE, '6': Rank.SIX,
+            '7': Rank.SEVEN, '8': Rank.EIGHT, '9': Rank.NINE,
+            '10': Rank.TEN, 'J': Rank.JACK, 'Q': Rank.QUEEN,
+            'K': Rank.KING, 'S': Suit.SPADE, 'C':Suit.CLUB, 'H': Suit.HEART, 'D' : Suit.DIAMOND
+        }
+    hand_jogador = HandParser([])
+    hand_bot = HandParser([])
+    for i in range(2):
+        valor = MC_cartas_jogador[i][:-1]
+        naipe = MC_cartas_jogador[i][-1]
+        hand_jogador += [(biblis[valor],biblis[naipe])]
+        valor = bot.cartas[i][:-1]
+        naipe = bot.cartas[i][-1]
+        hand_bot += [(biblis[valor],biblis[naipe])]
+
+    for i in range(len(MC_mesa)):
+        valor = MC_mesa[i][:-1]
+        naipe = MC_mesa[i][-1]
+        hand_jogador += [(biblis[valor],biblis[naipe])]
+        hand_bot += [(biblis[valor],biblis[naipe])]
+     
+    if hand_jogador > hand_bot: 
+        return 0 
+    else:
+        return 1
+
+
+def monte_carlo():
+
+    MC_vitorias_bot = 0
+
+    for i in range(ITERACOES_MONTE_CARLO):
+        MC_deck = cartas_deck.copy()
+        random.shuffle(MC_deck)
+
+        MC_cartas_jogador = [MC_deck.pop(), MC_deck.pop()]
+        MC_mesa = cartas_mesa.copy()
+        for j in range(5-len(MC_mesa)):
+            MC_mesa.append(MC_deck.pop())
+        MC_vitorias_bot += MC_verifica_perdedor(MC_cartas_jogador, MC_mesa)
+        
+
+    print("\n\nVITORIAS BOT: ", MC_vitorias_bot, "\n\n")
+    return (MC_vitorias_bot/ITERACOES_MONTE_CARLO)
+
+
 def calcula_aposta(): #TODO como o bot calcula a aposta
     return 100
 
 def formula_d(): # TODO formula
+    mt = monte_carlo()*100
+    log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
     if BOT_RECONHER:
         probs = pegar_probabilidades_webcam_tempo(cap, duracao=3, pesos=PESOS_EMOCAO)
         maior_emocao = max(probs, key=probs.get)
@@ -532,7 +586,7 @@ def formula_d(): # TODO formula
         maior_emocao = "neutral"
     log_mensagem(f"Jogador está {maior_emocao}")
     
-    return 51
+    return mt
 
 def acao_bot(houve_aposta): # TODO acho que esta certo
     d = formula_d()
