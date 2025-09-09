@@ -8,6 +8,8 @@ import time
 from deepface import DeepFace
 import numpy as np
 
+# pra rodar precisa do especificamente do python 3.10 e instalar tf-keras para o reconhecimento facial
+
 # TODO arrumar os logs pra ficar melhor
 # TODO implementar a bomba da IA (SOON)
 # TODO arrumar a travada que o reconhecimento da
