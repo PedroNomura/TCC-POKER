@@ -9,16 +9,15 @@ from deepface import DeepFace
 import numpy as np
 
 # TODO arrumar os logs pra ficar melhor
-# TODO fazer alguns bangs visuais
 # TODO implementar a bomba da IA (SOON)
-    # pro monte carlo - jogador.cartas + cartas_mesa + bot.cartas (pro monte carlo vai passar as cartas do player? tipo não é justo)
+# TODO arrumar a travada que o reconhecimento da
 # TODO revisar codigo/bugs (VERY SOON)
 
-hertz = 144 # TODO esse valor tem que ser a taxa de atualização do seu monitor (hertz)
+hertz = 144
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-BOT_RECONHER = True # ativar o reconhecimento (SOON) 
+BOT_RECONHER = False # ativar o reconhecimento (SOON) 
 ITERACOES_MONTE_CARLO = 10000
 VALOR_MINIMO_D = 50
 PESOS_EMOCAO = {
@@ -45,10 +44,6 @@ mostra_bot = False
 espera_jogador = False
 acao = ""
 valor = 0
-# tela de vitoria
-# mostra_vencedor = False
-# duracao_vitoria = 4000
-# tela_vitoria_ini = 0
 
 
 def log_mensagem(texto):
@@ -63,8 +58,16 @@ BIG_BLIND = 100 # valor do big blind
 SMALL_BLIND = 50 # valor do small blind
 
 # Tamanho da tela
-WIDTH, HEIGHT = 1500, 760 # TODO ver se ta bom # Mudei 1700, 860 
+WIDTH, HEIGHT = 1700, 860 # TODO ver se ta bom # Mudei 1700, 860 
 #WIDTH, HEIGHT = 1920, 1080 # (1920x1080 pra tela cheia)
+
+# tela de vitoria
+mostra_vencedor = False
+tela_vitoria_inicio = 0
+duracao_vitoria = 1000  # duração em ms
+vencedor_rodada = None
+cartas_vencedor = None
+espera_vitoria = False
 
 # botoes e caixa de texto
 botao_check = pygame.Rect(DISTANCIA_MESA_D_USUARIO, HEIGHT - 80, 200, 60)
@@ -207,7 +210,6 @@ def draw_text(text, color, rect, surface):
     label = font.render(text, True, color)
     text_rect = label.get_rect(center=rect.center)
     surface.blit(label, text_rect)
-
 
 
 # Loop principal
@@ -358,15 +360,52 @@ def river():
     #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
     # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
 
+tipo_mao = {
+    0: "HIGHCARD",
+    1: "ONEPAIR",
+    2: "TWOPAIR",
+    3: "THREEOFAKIND",
+    4: "STRAIGHT",
+    5: "FLUSH",
+    6: "FULLHOUSE",
+    7: "FOUROFAKIND",
+    8: "STRAIGHTFLUSH"
+}
 
+biblis = {
+        'A': Rank.ACE, '2': Rank.TWO, '3': Rank.THREE, 
+        '4': Rank.FOUR, '5': Rank.FIVE, '6': Rank.SIX,
+        '7': Rank.SEVEN, '8': Rank.EIGHT, '9': Rank.NINE,
+        '10': Rank.TEN, 'J': Rank.JACK, 'Q': Rank.QUEEN,
+        'K': Rank.KING, 'S': Suit.SPADE, 'C':Suit.CLUB, 'H': Suit.HEART, 'D' : Suit.DIAMOND
+}
+
+def desenhar_tela_vitoria():
+    # Fundo semi-transparente
+    s = pygame.Surface((WIDTH, HEIGHT))
+    s.set_alpha(50)
+    s.fill((0, 0, 0))
+    screen.blit(s, (0, 0))
+
+    # Caixa central
+    box_width, box_height = 600, 200
+    box_rect = pygame.Rect(WIDTH//2 - box_width//2, 200 - box_height//2, box_width, box_height)
+    pygame.draw.rect(screen, (0, 255, 255), box_rect)
+    pygame.draw.rect(screen, BLACK, box_rect, 5)
+
+    # Texto vencedor
+    font_grande = pygame.font.SysFont("Arial", 40, bold=True)
+    texto_altura = 250 - box_height//2  # controle da altura do texto
+    if vencedor_rodada:
+        texto_vencedor = f"{vencedor_rodada.nome.upper()} VENCEU!"
+    else:
+        texto_vencedor = "EMPATE!"
+    label = font_grande.render(texto_vencedor, True, BLACK)
+    label_rect = label.get_rect(center=(WIDTH//2, texto_altura))
+    screen.blit(label, label_rect)
+        
 def verifica_perdedor():
-    biblis = {
-            'A': Rank.ACE, '2': Rank.TWO, '3': Rank.THREE, 
-            '4': Rank.FOUR, '5': Rank.FIVE, '6': Rank.SIX,
-            '7': Rank.SEVEN, '8': Rank.EIGHT, '9': Rank.NINE,
-            '10': Rank.TEN, 'J': Rank.JACK, 'Q': Rank.QUEEN,
-            'K': Rank.KING, 'S': Suit.SPADE, 'C':Suit.CLUB, 'H': Suit.HEART, 'D' : Suit.DIAMOND
-        }
+
     hand_jogador = HandParser([])
     hand_bot = HandParser([])
     for i in range(2):
@@ -383,17 +422,7 @@ def verifica_perdedor():
         hand_jogador += [(biblis[valor],biblis[naipe])]
         hand_bot += [(biblis[valor],biblis[naipe])]
 
-    tipo_mao = {
-    0: "HIGHCARD",
-    1: "ONEPAIR",
-    2: "TWOPAIR",
-    3: "THREEOFAKIND",
-    4: "STRAIGHT",
-    5: "FLUSH",
-    6: "FULLHOUSE",
-    7: "FOUROFAKIND",
-    8: "STRAIGHTFLUSH"
-    }
+
 
     print(f"\n\njogador {tipo_mao[hand_jogador.handenum]} com {sorted(jogador.cartas+cartas_mesa)}\nbot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas+cartas_mesa)}\n\n")
     log_mensagem(f"jogador {tipo_mao[hand_jogador.handenum]}")
@@ -409,17 +438,32 @@ def verifica_perdedor():
 # caso perdedor seja None indica que chegou ao showdown e precisa verificar quem ganha, se não perdedor foi quem deu fold
 def fim_rodada(perdedor=None):
     global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux
+    global mostra_vencedor, tela_vitoria_inicio, vencedor_rodada, cartas_vencedor
+
+    
     log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
     log_mensagem(f"Mesa ({int(pote)}): {sorted(cartas_mesa)}")
 
     # caso venha None precisa verificar
     if perdedor == None:
-        for i in range(2):
-            img = pygame.image.load(f"img/cards/{bot.cartas[i]}.png")
-            img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
-            img_cartas_bot.insert(i,img)
+        # Mostrar cartas do bot na posição atual
+        for i in enumerate(img_cartas_bot):
+            for i in range(2):
+                img = pygame.image.load(f"img/cards/{bot.cartas[i]}.png")
+                img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
+                img_cartas_bot[i] = img
         perdedor = verifica_perdedor()
+    
+    if perdedor == bot:
+        vencedor_rodada = jogador 
+    elif perdedor == jogador:
+        vencedor_rodada = bot
+    else:
+        vencedor_rodada = None
+
+    mostra_vencedor = True
+    tela_vitoria_inicio = pygame.time.get_ticks()
 
     # caso o verificador retornou None é empate e precisa dividir o pote
     if perdedor == None:
@@ -445,7 +489,6 @@ def fim_rodada(perdedor=None):
         print("\nEMPATE\n")
         log_mensagem("EMPATE")
     
-    # TODO mensagem que mostra vencedor
 
     # troca categoria do blind (SB vira BB e BB vira SB)
     if jogador.blind == BIG_BLIND:
@@ -601,7 +644,7 @@ def acao_bot(houve_aposta): # TODO acho que esta certo
 
 def desenhar_interface():
     screen.fill((0, 100, 0))
-
+    global vencedor_rodada, mostra_vencedor
     # Mesa
     pygame.draw.ellipse(screen, GREEN, table_rect)
 
@@ -671,6 +714,13 @@ def desenhar_interface():
     # Pote
     draw_text("Pote: "+str(pote), WHITE, pote_rect, screen)
     screen.blit(fichas_mesa, fichas_mesa_pos)
+
+    if mostra_vencedor:
+        desenhar_tela_vitoria()
+        # verifica se já passou a duração
+        if pygame.time.get_ticks() - tela_vitoria_inicio > duracao_vitoria:
+            mostra_vencedor = False
+            vencedor_rodada = None
 
     # Cartas do jogador e mesa
     if img_cartas_jogador:
@@ -747,7 +797,7 @@ def processar_eventos():
 
 
 def acao_jogador():
-    global espera_jogador, arrastando
+    global espera_jogador
     espera_jogador = True
     while espera_jogador:
         processar_eventos()
