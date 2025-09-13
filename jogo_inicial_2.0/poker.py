@@ -244,9 +244,10 @@ baralho = pygame.transform.scale(baralho, (114,163)) # TODO ver tamanho
 baralho_pos = (table_rect.centerx + 100, dealer_rect.left - 200)
 
 # Jarda TODO da pra por a camera (seria foda)
+
 jarda = pygame.image.load("img/jarda.png").convert_alpha()
 jarda = pygame.transform.scale(jarda, (150,150)) # TODO ver tamanho
-jarda_pos = (player_rect.centerx - 75 - DISTANCIA_MESA_D_USUARIO, player_rect.centery - 150 + DISTANCIA_MESA_D_USUARIO)
+jarda_pos = (player_rect.centerx - 65 - DISTANCIA_MESA_D_USUARIO, player_rect.centery - 150 + DISTANCIA_MESA_D_USUARIO)
 partida = True
 
 # Jogo
@@ -279,6 +280,7 @@ def pre_flop():
         imgs_mesa.insert(i,baralho)
 
     # print pro jogada via terminal
+    log_mensagem("(PRE FLOP)--------------------------------------")
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas,"\n")
 
@@ -305,6 +307,7 @@ def flop():
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas)
     print("(",pote,") mesa:",cartas_mesa,"\n")
+    log_mensagem("(FLOP)------------------------------------------")
 
 
     # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
@@ -336,6 +339,7 @@ def turn():
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas)
     print("(",pote,") mesa:",cartas_mesa,"\n")
+    log_mensagem("(TURN)------------------------------------------")
 
     # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
     # if mostra_bot:
@@ -356,6 +360,7 @@ def river():
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas)
     print("(",pote,") mesa:",cartas_mesa,"\n")
+    log_mensagem("(RIVER)-----------------------------------------")
 
     # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
     # if mostra_bot:
@@ -423,27 +428,27 @@ def verifica_perdedor():
         naipe = cartas_mesa[i][-1]
         hand_jogador += [(biblis[valor],biblis[naipe])]
         hand_bot += [(biblis[valor],biblis[naipe])]
-
-
+    
 
     print(f"\n\njogador {tipo_mao[hand_jogador.handenum]} com {sorted(jogador.cartas+cartas_mesa)}\nbot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas+cartas_mesa)}\n\n")
-    log_mensagem(f"jogador {tipo_mao[hand_jogador.handenum]}")
-    log_mensagem(f"bot {tipo_mao[hand_bot.handenum]}")
-    
+    log_mensagem(f"Bot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas)}")
     if hand_jogador == hand_bot:
         return None
     elif hand_jogador > hand_bot:
         return bot 
     else:
         return jogador
+    
 
 # caso perdedor seja None indica que chegou ao showdown e precisa verificar quem ganha, se não perdedor foi quem deu fold
 def fim_rodada(perdedor=None):
-    global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux
+    global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux, jarda
     global mostra_vencedor, tela_vitoria_inicio, vencedor_rodada, cartas_vencedor
 
     
-    log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
+    jarda = pygame.image.load(random.choice(["img/jarda.png","img/joao.png","img/nomura.png","img/victor.png"])).convert_alpha()
+    jarda = pygame.transform.scale(jarda, (150,150)) # TODO ver tamanho
+
     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
     log_mensagem(f"Mesa ({int(pote)}): {sorted(cartas_mesa)}")
 
@@ -623,13 +628,14 @@ def calcula_aposta(): #TODO como o bot calcula a aposta
 
 def formula_d(): # TODO formula
     mt = monte_carlo()*100
-    log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
     if BOT_RECONHER:
         probs = pegar_probabilidades_webcam_tempo(cap, duracao=3, pesos=PESOS_EMOCAO)
         maior_emocao = max(probs, key=probs.get)
     else:
         maior_emocao = "neutral"
-    log_mensagem(f"Jogador está {maior_emocao}")
+    if mostra_bot:
+        log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
+        log_mensagem(f"Jogador está {maior_emocao}")
     
     return mt
 
@@ -837,6 +843,7 @@ def jogadas(jogador1, jogador2):
 
             # all-in pass
             if jogador_vez.fichas == 0:
+                log_mensagem("(ALL IN)----------------------------------------")
                 acao = "call"
 
             elif jogador_vez.e_bot:
@@ -896,8 +903,6 @@ def jogadas(jogador1, jogador2):
     for jogador in [jogador1, jogador2]:
         alerta_aposta = False
         jogador.aposta = 0
-    log_mensagem("")
-    log_mensagem("")
     
     # Ao fim da rodada, atualiza o pote
     pote += pote_aux
@@ -1001,11 +1006,6 @@ while running:
     # distribui as cartas e o pote
     if fase == "inicio":
         if jogador.fichas == 0 or bot.fichas == 0: # TODO indica que houve allin e precisa de tela de vitoria avassaladora de alguem 
-            log_mensagem("")
-            log_mensagem("")
-            log_mensagem("")
-            log_mensagem("")
-            log_mensagem("")
             restart()
         pre_flop()
         fase = "pre_flop_ani"
