@@ -541,7 +541,6 @@ def pegar_probabilidades_webcam_tempo(cap, duracao=5, pesos=PESOS_EMOCAO):
         ret, frame = cap.read()
         if not ret:
             break
-
         try:
             resultado = DeepFace.analyze(frame, actions=["emotion"], enforce_detection=True)
             if isinstance(resultado, list):
@@ -641,7 +640,7 @@ def leitura_numeral(maior_emocao):
     else:
         return 50
 
-def formula_d(): # TODO formula
+def formula_d(): # 
     mt = monte_carlo()*100
     if BOT_RECONHER:
         probs = pegar_probabilidades_webcam_tempo(cap, duracao=3, pesos=PESOS_EMOCAO)
@@ -652,7 +651,7 @@ def formula_d(): # TODO formula
     if mostra_bot:
         log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
         log_mensagem(f"Jogador está {maior_emocao}")
-    valor_d = 0.5 * mt + 0.5 * valor_emocao
+    valor_d = mt + valor_emocao
     log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
     log_mensagem(f"Jogador está {maior_emocao}")
     log_mensagem(f"Valor de D é {valor_d:.2f}  ")
