@@ -19,7 +19,7 @@ hertz = 144
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-BOT_RECONHER = False # ativar o reconhecimento (SOON) 
+BOT_RECONHER = True # ativar o reconhecimento (SOON) 
 ITERACOES_MONTE_CARLO = 10000
 VALOR_MINIMO_D = 50
 PESOS_EMOCAO = {
@@ -626,18 +626,39 @@ def monte_carlo():
 def calcula_aposta(): #TODO como o bot calcula a aposta
     return 100
 
+def leitura_numeral(maior_emocao):
+    if maior_emocao == "happy":
+        return 20
+    elif maior_emocao == "sad":
+        return 80
+    elif maior_emocao == "angry":
+        return 90
+    elif maior_emocao == "fear":
+        return 50
+    elif maior_emocao == "disgust":
+        return 100
+    elif maior_emocao == "surprise":
+        return 20
+    else:
+        return 50
+
 def formula_d(): # TODO formula
     mt = monte_carlo()*100
     if BOT_RECONHER:
         probs = pegar_probabilidades_webcam_tempo(cap, duracao=3, pesos=PESOS_EMOCAO)
         maior_emocao = max(probs, key=probs.get)
+        valor_emocao = leitura_numeral(maior_emocao)
     else:
         maior_emocao = "neutral"
     if mostra_bot:
         log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
         log_mensagem(f"Jogador está {maior_emocao}")
+    valor_d = 0.5 * mt + 0.5 * valor_emocao
+    log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
+    log_mensagem(f"Jogador está {maior_emocao}")
+    log_mensagem(f"Valor de D é {valor_d:.2f}  ")
     
-    return mt
+    return valor_d
 
 def acao_bot(houve_aposta): # TODO acho que esta certo
     d = formula_d()
