@@ -278,7 +278,7 @@ def pre_flop():
         imgs_mesa.insert(i,baralho)
 
     # print pro jogada via terminal
-    log_mensagem("(PRE FLOP)--------------------------------------")
+    log_mensagem("(PRE FLOP)---------------------------------------------")
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas,"\n")
 
@@ -305,7 +305,7 @@ def flop():
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas)
     print("(",pote,") mesa:",cartas_mesa,"\n")
-    log_mensagem("(FLOP)------------------------------------------")
+    log_mensagem("(FLOP)-------------------------------------------------")
 
 
     # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
@@ -337,7 +337,7 @@ def turn():
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas)
     print("(",pote,") mesa:",cartas_mesa,"\n")
-    log_mensagem("(TURN)------------------------------------------")
+    log_mensagem("(TURN)-------------------------------------------------")
 
     # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
     # if mostra_bot:
@@ -358,7 +358,7 @@ def river():
     print("(",jogador.fichas,") jogador:",jogador.cartas)
     print("(",bot.fichas,") bot:",bot.cartas)
     print("(",pote,") mesa:",cartas_mesa,"\n")
-    log_mensagem("(RIVER)-----------------------------------------")
+    log_mensagem("(RIVER)------------------------------------------------")
 
     # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
     # if mostra_bot:
@@ -535,8 +535,6 @@ def pegar_emocao_dominante_webcam(cap, duracao=5, limiar=0.6):
     inicio = time.time()
     lista_probs_frames = []
     frame_count = 0
-
-    print(f"Analisando emoções por {duracao} segundos... Por favor, olhe para a câmera.")
 
     while time.time() - inicio < duracao:
         ret, frame = cap.read()
@@ -879,7 +877,7 @@ def jogadas(jogador1, jogador2):
 
             # all-in pass
             if jogador_vez.fichas == 0:
-                log_mensagem("(ALL IN)----------------------------------------")
+                log_mensagem("(ALL IN)-----------------------------------------------")
                 acao = "call"
 
             elif jogador_vez.e_bot:
@@ -946,7 +944,7 @@ def jogadas(jogador1, jogador2):
 
 
 def desenha_log():
-    largura = 400
+    largura = 450
     altura = font.get_height() * MAX_MENSAGENS + 20
     x = 20
     y = 20
