@@ -10,7 +10,6 @@ import numpy as np
 
 # pra rodar precisa do especificamente do python 3.10 e instalar tf-keras para o reconhecimento facial
 
-# TODO implementar a bomba da IA (SOON)
 # TODO arrumar a travada que o reconhecimento da (IMPOSSIVEL)
 # TODO revisar codigo/bugs (VERY SOON)
 
@@ -20,7 +19,7 @@ velocidade = 500 # velocidade das animações
 # variaveis do bot
 BOT_RECONHER = True # ativar o reconhecimento (SOON) 
 ITERACOES_MONTE_CARLO = 10000
-VALOR_MINIMO_D = 50
+VALOR_MINIMO_D = 50 # TODO ajustar os valores NOMURA
 PESOS_EMOCAO = {
     "happy": 2,
     "sad": 1.5,
@@ -528,49 +527,62 @@ def fim_rodada(perdedor=None):
     # print(f"jogador é {"BB" if jogador.blind == BIG_BLIND else "SB"}")
 
 
-def pegar_probabilidades_webcam_tempo(cap, duracao=5, pesos=PESOS_EMOCAO):
+def pegar_emocao_dominante_webcam(cap, duracao=5, limiar=0.6):
     if not cap.isOpened():
         print("Erro: webcam não está aberta.")
         return None
 
     inicio = time.time()
-    lista_probs = []
+    lista_probs_frames = []
     frame_count = 0
+
+    print(f"Analisando emoções por {duracao} segundos... Por favor, olhe para a câmera.")
 
     while time.time() - inicio < duracao:
         ret, frame = cap.read()
         if not ret:
             break
         try:
-            resultado = DeepFace.analyze(frame, actions=["emotion"], enforce_detection=True)
+            # A análise é feita em cada frame
+            resultado = DeepFace.analyze(frame, actions=["emotion"], enforce_detection=True, silent=True)
+            
+            # DeepFace pode retornar uma lista se houver múltiplos rostos, pegamos o primeiro
             if isinstance(resultado, list):
                 resultado = resultado[0]
 
-            # Ignora o primeiro frame para evitar atraso inicial
+            # Ignora o primeiro frame para estabilização da câmera
             if frame_count > 0:
-                # Remove "neutral" antes de armazenar
+                # Remove a emoção "neutral" para focar nas outras
                 emo_frame = {k: v for k, v in resultado["emotion"].items() if k != "neutral"}
-                lista_probs.append(emo_frame)
-
+                lista_probs_frames.append(emo_frame)
+            
             frame_count += 1
 
-        except Exception as e:
-            print("Erro em um frame:", e)
+        except ValueError:
+            pass
 
-    if not lista_probs:
+    if not lista_probs_frames:
+        print("Nenhum rosto foi detectado durante o período de análise.")
         return None
 
-    # calcular média das probabilidades (ignorando "neutral")
-    chaves = lista_probs[0].keys()
-    medias = {chave: np.mean([d[chave] for d in lista_probs]) for chave in chaves}
+    # 1. Calcular a média das probabilidades para todas as emoções capturadas
+    chaves_emocoes = lista_probs_frames[0].keys()
+    medias_emocoes = {chave: np.mean([d[chave] for d in lista_probs_frames]) for chave in chaves_emocoes}
 
-    # aplicar pesos se fornecidos
-    if pesos:
-        for emo, peso in pesos.items():
-            if emo in medias:
-                medias[emo] *= peso
+    # 2. Encontrar a emoção com a maior probabilidade média
+    emocao_dominante = max(medias_emocoes, key=medias_emocoes.get)
+    prob_dominante = medias_emocoes[emocao_dominante]
 
-    return medias
+    # 3. Verificar se a probabilidade da emoção dominante ultrapassa o limiar (60%)
+    if prob_dominante > limiar:
+        # Cria um novo dicionário com todas as emoções zeradas
+        resultado_final = {emo: 0.0 for emo in medias_emocoes.keys()}
+        # Define o valor da emoção dominante
+        resultado_final[emocao_dominante] = prob_dominante
+        return resultado_final
+    else:
+        # 4. Se nenhuma emoção for maior que 60%, retorna o dicionário original de médias
+        return medias_emocoes
 
 def MC_verifica_perdedor(MC_cartas_jogador, MC_mesa):
     biblis = {
@@ -624,38 +636,43 @@ def monte_carlo():
 def calcula_aposta(): #TODO como o bot calcula a aposta
     return 100
 
-def leitura_numeral(maior_emocao):
+def leitura_numeral(maior_emocao): # TODO ajustar os valores NOMURA
     if maior_emocao == "happy":
-        return 20
+        return -20
     elif maior_emocao == "sad":
-        return 80
+        return 35
     elif maior_emocao == "angry":
-        return 90
+        return 40
     elif maior_emocao == "fear":
-        return 50
+        return 25
     elif maior_emocao == "disgust":
-        return 100
-    elif maior_emocao == "surprise":
-        return 20
-    else:
         return 50
+    elif maior_emocao == "surprise":
+        return -20
+    else:
+        return 0
 
-def formula_d(): # 
-    mt = monte_carlo()*100
+def formula_d():
+    mt = monte_carlo() * 100
+    valor_emocao = 0  # Inicializa com um valor neutro
+    maior_emocao = "neutral"  # Valor padrão
+
     if BOT_RECONHER:
-        probs = pegar_probabilidades_webcam_tempo(cap, duracao=3, pesos=PESOS_EMOCAO)
-        maior_emocao = max(probs, key=probs.get)
-        valor_emocao = leitura_numeral(maior_emocao)
+        probs = pegar_emocao_dominante_webcam(cap, duracao=3, limiar=0.6)
+        emocoes_detectadas = [emo for emo, prob in probs.items() if prob > 0]
+        if len(emocoes_detectadas) == 1:
+            maior_emocao = emocoes_detectadas[0]
+            valor_emocao = leitura_numeral(maior_emocao)
+        else:
+            maior_emocao = max(probs, key=probs.get)
+            valor_emocao = leitura_numeral(maior_emocao) * probs[maior_emocao]
     else:
         maior_emocao = "neutral"
-    if mostra_bot:
-        log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
-        log_mensagem(f"Jogador está {maior_emocao}")
+        valor_emocao = 0
     valor_d = mt + valor_emocao
-    log_mensagem(f"Chance do bot vencer de {mt:.2f}%")
-    log_mensagem(f"Jogador está {maior_emocao}")
-    log_mensagem(f"Valor de D é {valor_d:.2f}  ")
-    
+    log_mensagem(f"Chance base do bot (Monte Carlo): {mt:.2f}%")
+    log_mensagem(f"Análise do jogador: {maior_emocao} (Impacto: {valor_emocao})")
+    log_mensagem(f"Valor final de D é {valor_d:.2f}")
     return valor_d
 
 def acao_bot(houve_aposta): # TODO acho que esta certo
