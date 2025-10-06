@@ -17,9 +17,11 @@ hertz = 144
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-BOT_RECONHER = True # ativar o reconhecimento (SOON) 
-ITERACOES_MONTE_CARLO = 10000
+PESO_CONDIÇOES_JOGO = 3 # Testar e talvez rever
+BOT_RECONHER = False # ativar o reconhecimento (SOON) 
+ITERACOES_MONTE_CARLO = 10000 # Preciso testar qual é um valor adequado
 VALOR_MINIMO_D = 50 # TODO ajustar os valores NOMURA
+VALOR_MINIMO_D_RAISE = 75 
 PESOS_EMOCAO = {
     "happy": 2,
     "sad": 1.5,
@@ -630,11 +632,36 @@ def monte_carlo():
     print("\n\nVITORIAS BOT: ", MC_vitorias_bot, "\n\n")
     return (MC_vitorias_bot/ITERACOES_MONTE_CARLO)
 
+def CF_proporcao_fichas():
+    if bot.fichas / jogador.fichas <= 0.5:
+        return -PESO_CONDIÇOES_JOGO
+    elif bot.fichas / jogador.fichas >= 2:
+        return PESO_CONDIÇOES_JOGO
+    else:
+        return 0
+
+def analise_jogo():
+    valor_analise_jogo = 0
+    # AG: Agressividade proporção de mãos jogadas do jogador em relação ao total de mãos - talvez fazer, pensar detalhadamente
+    # CF: Proporção de fichas
+    valor_analise_jogo += CF_proporcao_fichas()
+    # B: Quantidade de blinds que foi apostado - talvez fazer
+    if jogador.aposta / BIG_BLIND >= 10: # Talvez rever esse valor
+        valor_analise_jogo -= PESO_CONDIÇOES_JOGO
+    # RF: Relação entre a quantidade de fichas necessárias para o call e as já apostadas na rodada - talvez fazer
+    if jogador.aposta / (pote/2) >= 0.2:
+        valor_analise_jogo += PESO_CONDIÇOES_JOGO
+    # Cp: Se houve check do jogador
+    if houve_check:
+        valor_analise_jogo += PESO_CONDIÇOES_JOGO
+
+    return valor_analise_jogo
+
 
 def calcula_aposta(): #TODO como o bot calcula a aposta
-    return 100
+    return BIG_BLIND
 
-def leitura_numeral(maior_emocao): # TODO ajustar os valores NOMURA
+def leitura_numeral(maior_emocao, segunda_maior_emocao): # TODO ajustar os valores NOMURA
     if maior_emocao == "happy":
         return -20
     elif maior_emocao == "sad":
@@ -649,6 +676,25 @@ def leitura_numeral(maior_emocao): # TODO ajustar os valores NOMURA
         return -20
     else:
         return 0
+    # Pensei aqui em padronizar tudo em 20 mas foi algo que só pensei, não sei da onde vieram os outros
+    #   valores, pode ser também, fiz um esquema para ver se surprise é bom ou não, não testei
+    # if maior_emocao == "happy":
+    #     return -20
+    # elif maior_emocao == "sad":
+    #     return 20
+    # elif maior_emocao == "angry":
+    #     return 20
+    # elif maior_emocao == "fear":
+    #     return 20
+    # elif maior_emocao == "disgust":
+    #     return 20
+    # elif maior_emocao == "surprise": 
+    #     if segunda_maior_emocao == "happy":
+    #         return -20
+    #     else:
+    #         return 20
+    # else:
+    #     return 0
 
 def formula_d():
     mt = monte_carlo() * 100
@@ -660,23 +706,37 @@ def formula_d():
         emocoes_detectadas = [emo for emo, prob in probs.items() if prob > 0]
         if len(emocoes_detectadas) == 1:
             maior_emocao = emocoes_detectadas[0]
-            valor_emocao = leitura_numeral(maior_emocao)
+            valor_emocao = leitura_numeral(maior_emocao, "nenhuma")
         else:
             maior_emocao = max(probs, key=probs.get)
-            valor_emocao = leitura_numeral(maior_emocao) * probs[maior_emocao]
+            segunda_maior_emocao = "nenhuma"
+            # Parte relacionada a checar se surprise é bom ou não, não sei se ta certinho
+            # prob = probs[maior_emocao]
+            # probs.remove(maior_emocao)
+            # segunda_maior_emocao = max(probs, key=probs.get)
+            # valor_emocao = leitura_numeral(maior_emocao, segunda_maior_emocao) * prob
+            valor_emocao = leitura_numeral(maior_emocao, segunda_maior_emocao) * probs[maior_emocao]
     else:
         maior_emocao = "neutral"
         valor_emocao = 0
-    valor_d = mt + valor_emocao
+
+    valor_analise_jogo = analise_jogo()
+
+    valor_d = mt + valor_emocao + valor_analise_jogo
+    
     log_mensagem(f"Chance base do bot (Monte Carlo): {mt:.2f}%")
     log_mensagem(f"Análise do jogador: {maior_emocao} (Impacto: {valor_emocao})")
     log_mensagem(f"Valor final de D é {valor_d:.2f}")
+
     return valor_d
 
 def acao_bot(houve_aposta): # TODO acho que esta certo
     d = formula_d()
     if houve_aposta and d <= VALOR_MINIMO_D:
         return ("fold",0)
+    # Se a probabilidade de ganhar for muito grande ele daria raise
+    # elif houve_aposta and d > VALOR_MINIMO_D_RAISE: 
+    #     return ("bet",calcula_aposta())
     elif houve_aposta and d > VALOR_MINIMO_D:
         return ("call",jogador.aposta)
     elif not houve_aposta and d > VALOR_MINIMO_D:
@@ -850,7 +910,7 @@ def acao_jogador():
 
 
 alerta_aposta = False
-
+houve_check = False
 
 def jogadas(jogador1, jogador2):
     global pote, pote_aux, e_pre_flop, aposta_minima,alerta_aposta, acao, valor
@@ -865,7 +925,8 @@ def jogadas(jogador1, jogador2):
     rodada_finalizada = False
     
     while not rodada_finalizada:
-
+        # Parte da analise de jogo
+        houve_check = False #
         for jogador_vez in ordem:
             # Exibir estado (para debug ou exibição futura)
             print(f"\n{jogador_vez.nome} ({'BOT' if jogador_vez.e_bot else 'JOGADOR'})")
@@ -901,6 +962,7 @@ def jogadas(jogador1, jogador2):
                 if jogador_vez.aposta == maior_aposta:
                     print(f"{jogador_vez.nome} deu check.")
                     log_mensagem(f"{jogador_vez.nome} passou a vez. (check)")
+                    houve_check = True # Parte da analise de jogo
             
             elif acao == "call":
                 maior_aposta = max(jogador1.aposta, jogador2.aposta)
