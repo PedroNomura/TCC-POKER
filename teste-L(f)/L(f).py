@@ -32,6 +32,7 @@ def pegar_probabilidades_webcam_tempo(cap, duracao=5, pesos=None):
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 # opcional: escrever a emoção dominante
                 emocao_dominante = max(resultado["emotion"], key=resultado["emotion"].get)
+                emocao_dominante += f" ({resultado['emotion'][emocao_dominante]:.2f}%)"
                 cv2.putText(frame, emocao_dominante, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
             # Ignora o primeiro frame para evitar atraso inicial
@@ -78,7 +79,7 @@ pesos = {
     "surprise": 1
 }
 
-probs = pegar_probabilidades_webcam_tempo(cap, duracao=10, pesos=pesos)
+probs = pegar_probabilidades_webcam_tempo(cap, duracao=100, pesos=pesos)
 cap.release()
 
 if probs:
