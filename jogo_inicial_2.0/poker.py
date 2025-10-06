@@ -18,7 +18,8 @@ velocidade = 500 # velocidade das animações
 
 # variaveis do bot
 PESO_CONDIÇOES_JOGO = 3 # Testar e talvez rever
-BOT_RECONHER = False # ativar o reconhecimento (SOON) 
+BOT_RECONHER = True # ativar o reconhecimento (SOON) 
+MOSTRA_BOT = True # ativar pra ver as cartas do bot
 ITERACOES_MONTE_CARLO = 10000 # Preciso testar qual é um valor adequado
 VALOR_MINIMO_D = 50 # TODO ajustar os valores NOMURA
 VALOR_MINIMO_D_RAISE = 75 
@@ -41,7 +42,6 @@ grade = False # ativar grade pra ajustar os desenhos
 FUNDO = "img/cards/closed.png" 
 mensagens_log = []
 MAX_MENSAGENS = 6  # máximo de mensagens visíveis
-mostra_bot = False
 
 espera_jogador = False
 acao = ""
@@ -285,7 +285,7 @@ def pre_flop():
     print("(",bot.fichas,") bot:",bot.cartas,"\n")
 
     log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-    if mostra_bot:
+    if MOSTRA_BOT:
         log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
 
 
@@ -529,7 +529,7 @@ def fim_rodada(perdedor=None):
     # print(f"jogador é {"BB" if jogador.blind == BIG_BLIND else "SB"}")
 
 
-def pegar_emocao_dominante_webcam(cap, duracao=5, limiar=0.6):
+def pegar_emocao_dominante_webcam(cap, duracao=5, limiar=60):
     if not cap.isOpened():
         print("Erro: webcam não está aberta.")
         return None
@@ -568,17 +568,24 @@ def pegar_emocao_dominante_webcam(cap, duracao=5, limiar=0.6):
     # 1. Calcular a média das probabilidades para todas as emoções capturadas
     chaves_emocoes = lista_probs_frames[0].keys()
     medias_emocoes = {chave: np.mean([d[chave] for d in lista_probs_frames]) for chave in chaves_emocoes}
-
     # 2. Encontrar a emoção com a maior probabilidade média
     emocao_dominante = max(medias_emocoes, key=medias_emocoes.get)
     prob_dominante = medias_emocoes[emocao_dominante]
+
+    # Se a emoção dominante for "surprise", encontrar a segunda maior emoção
+    if emocao_dominante == "surprise":
+        segunda_maior_emocao = sorted(medias_emocoes, key=medias_emocoes.get, reverse=True)[1]
+        segunda_prob = medias_emocoes[segunda_maior_emocao]
 
     # 3. Verificar se a probabilidade da emoção dominante ultrapassa o limiar (60%)
     if prob_dominante > limiar:
         # Cria um novo dicionário com todas as emoções zeradas
         resultado_final = {emo: 0.0 for emo in medias_emocoes.keys()}
         # Define o valor da emoção dominante
-        resultado_final[emocao_dominante] = prob_dominante
+        resultado_final[emocao_dominante] = 100.0
+        # Se a emoção dominante for "surprise", também define a segunda maior emoção
+        if emocao_dominante == "surprise":
+            resultado_final[segunda_maior_emocao] = segunda_prob
         return resultado_final
     else:
         # 4. Se nenhuma emoção for maior que 60%, retorna o dicionário original de médias
@@ -661,7 +668,7 @@ def analise_jogo():
 def calcula_aposta(): #TODO como o bot calcula a aposta
     return BIG_BLIND
 
-def leitura_numeral(maior_emocao, segunda_maior_emocao): # TODO ajustar os valores NOMURA
+def leitura_numeral(maior_emocao): # TODO rever os valores mas o bang do suprise não fica bom não
     if maior_emocao == "happy":
         return -20
     elif maior_emocao == "sad":
@@ -673,28 +680,10 @@ def leitura_numeral(maior_emocao, segunda_maior_emocao): # TODO ajustar os valor
     elif maior_emocao == "disgust":
         return 50
     elif maior_emocao == "surprise":
-        return -20
+        return -40
     else:
         return 0
-    # Pensei aqui em padronizar tudo em 20 mas foi algo que só pensei, não sei da onde vieram os outros
-    #   valores, pode ser também, fiz um esquema para ver se surprise é bom ou não, não testei
-    # if maior_emocao == "happy":
-    #     return -20
-    # elif maior_emocao == "sad":
-    #     return 20
-    # elif maior_emocao == "angry":
-    #     return 20
-    # elif maior_emocao == "fear":
-    #     return 20
-    # elif maior_emocao == "disgust":
-    #     return 20
-    # elif maior_emocao == "surprise": 
-    #     if segunda_maior_emocao == "happy":
-    #         return -20
-    #     else:
-    #         return 20
-    # else:
-    #     return 0
+
 
 def formula_d():
     mt = monte_carlo() * 100
@@ -702,31 +691,27 @@ def formula_d():
     maior_emocao = "neutral"  # Valor padrão
 
     if BOT_RECONHER:
-        probs = pegar_emocao_dominante_webcam(cap, duracao=3, limiar=0.6)
+        probs = pegar_emocao_dominante_webcam(cap, duracao=3, limiar=50)
+        print("Probabilidades detectadas:", probs)
         emocoes_detectadas = [emo for emo, prob in probs.items() if prob > 0]
         if len(emocoes_detectadas) == 1:
             maior_emocao = emocoes_detectadas[0]
-            valor_emocao = leitura_numeral(maior_emocao, "nenhuma")
+            valor_emocao = leitura_numeral(maior_emocao)
         else:
             maior_emocao = max(probs, key=probs.get)
-            segunda_maior_emocao = "nenhuma"
-            # Parte relacionada a checar se surprise é bom ou não, não sei se ta certinho
-            # prob = probs[maior_emocao]
-            # probs.remove(maior_emocao)
-            # segunda_maior_emocao = max(probs, key=probs.get)
-            # valor_emocao = leitura_numeral(maior_emocao, segunda_maior_emocao) * prob
-            valor_emocao = leitura_numeral(maior_emocao, segunda_maior_emocao) * probs[maior_emocao]
+            valor_emocao = leitura_numeral(maior_emocao) * (probs[maior_emocao] / 100)
+        log_mensagem(f"L(f): {maior_emocao} - {probs[maior_emocao]:.2f}% (Impacto: {valor_emocao:.2f})")
     else:
         maior_emocao = "neutral"
         valor_emocao = 0
 
     valor_analise_jogo = analise_jogo()
-
     valor_d = mt + valor_emocao + valor_analise_jogo
-    
-    log_mensagem(f"Chance base do bot (Monte Carlo): {mt:.2f}%")
-    log_mensagem(f"Análise do jogador: {maior_emocao} (Impacto: {valor_emocao})")
-    log_mensagem(f"Valor final de D é {valor_d:.2f}")
+
+    if MOSTRA_BOT:
+        log_mensagem(f"Chance do Monte Carlo: {mt:.2f}%")
+        log_mensagem(f"Análise do jogo: {valor_analise_jogo:.2f}")
+        log_mensagem(f"Valor final de D é {valor_d:.2f}")
 
     return valor_d
 
