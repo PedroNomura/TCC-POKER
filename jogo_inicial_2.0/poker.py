@@ -210,34 +210,34 @@ clock = pygame.time.Clock()
 running = True
 
 # Mesa
-table_rect = pygame.Rect(WIDTH // 2 - 600, HEIGHT // 2 - 250, 1200, 500) # TODO ver tamanho porem se mexer fode logo cuidado
+table_rect = pygame.Rect(WIDTH // 2 - 600, HEIGHT // 2 - 250, WIDTH - 500, HEIGHT - 460) # TODO ver tamanho porem se mexer fode logo cuidado
 
 # Dealer
-dealer_rect = pygame.Rect(WIDTH // 2 - 50, table_rect.bottom + DISTANCIA_MESA_D_USUARIO, 100, 50) # TODO ver tamanho
+dealer_rect = pygame.Rect(WIDTH // 2 - 50, table_rect.bottom + DISTANCIA_MESA_D_USUARIO, 100, 50) 
 
 # Jogador
-player_rect = pygame.Rect(table_rect.left - 130 - DISTANCIA_MESA_D_USUARIO, HEIGHT // 2 - 25, 150, 50) # TODO ver tamanho
-player_chips_bet_rect = pygame.Rect(table_rect.midleft[0]  + DISTANCIA_MESA_D_USUARIO*2, player_rect.topright[1],100,50) # TODO ver tamanho
+player_rect = pygame.Rect(table_rect.left - 130 - DISTANCIA_MESA_D_USUARIO, HEIGHT // 2 - 25, 150, 50) 
+player_chips_bet_rect = pygame.Rect(table_rect.midleft[0]  + DISTANCIA_MESA_D_USUARIO*2, player_rect.topright[1],100,50) 
 
 # Bot
-bot_rect = pygame.Rect(table_rect.right , HEIGHT // 2 - 50, 150, 50) # TODO ver tamanho
-bot_chips_bet_rect = pygame.Rect(table_rect.midright[0] - DISTANCIA_MESA_D_USUARIO*2 - 100, bot_rect.midleft[1]- 25,100,50) # TODO ver tamanho
+bot_rect = pygame.Rect(table_rect.right , HEIGHT // 2 - 25, 150, 50) 
+bot_chips_bet_rect = pygame.Rect(table_rect.midright[0] - DISTANCIA_MESA_D_USUARIO*2 - 100, bot_rect.midleft[1]- 25,100,50) 
 
 # Pote
 fichas_mesa = pygame.image.load("img/fichas.png")
-fichas_mesa = pygame.transform.scale(fichas_mesa, (114,163)) # TODO ver tamanho
+fichas_mesa = pygame.transform.scale(fichas_mesa, (114,163))
 fichas_mesa_pos = (table_rect.centerx - 50,table_rect.centery + 40)
-pote_rect = pygame.Rect(fichas_mesa_pos[0]+130,fichas_mesa_pos[1],100,50) # TODO ver tamanho
+pote_rect = pygame.Rect(fichas_mesa_pos[0]+130,fichas_mesa_pos[1],100,50) 
 
 # Baralho
 baralho = pygame.image.load(FUNDO).convert_alpha()
-baralho = pygame.transform.scale(baralho, (114,163)) # TODO ver tamanho
+baralho = pygame.transform.scale(baralho, (114,163)) 
 baralho_pos = (table_rect.centerx + 100, dealer_rect.left - 200)
 
 # Jarda
 
 jarda = pygame.image.load("img/jarda.png").convert_alpha()
-jarda = pygame.transform.scale(jarda, (150,150)) # TODO ver tamanho
+jarda = pygame.transform.scale(jarda, (150,150)) 
 jarda_pos = (player_rect.centerx - 65 - DISTANCIA_MESA_D_USUARIO, player_rect.centery - 150 + DISTANCIA_MESA_D_USUARIO)
 
 # robo
@@ -727,7 +727,8 @@ def formula_d():
         else:
             maior_emocao = max(probs, key=probs.get)
             valor_emocao = leitura_numeral(maior_emocao) * (probs[maior_emocao] / 100)
-        log_mensagem(f"L(f): {maior_emocao} - {probs[maior_emocao]:.2f}% (Impacto: {valor_emocao:.2f})")
+        if MOSTRA_BOT:
+            log_mensagem(f"L(f): {maior_emocao} - {probs[maior_emocao]:.2f}% (Impacto: {valor_emocao:.2f})")
     else:
         maior_emocao = "neutral"
         valor_emocao = 0
