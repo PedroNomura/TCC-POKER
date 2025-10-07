@@ -18,7 +18,7 @@ velocidade = 500 # velocidade das animações
 
 # variaveis do bot
 PESO_CONDIÇOES_JOGO = 5 # Testar e talvez rever
-BOT_RECONHER = False # ativar o reconhecimento (SOON) 
+BOT_RECONHER = False # ativar o reconhecimento
 MOSTRA_BOT = False # ativar pra ver as cartas do bot
 ITERACOES_MONTE_CARLO = 10000 # Preciso testar qual é um valor adequado
 VALOR_MINIMO_D = 50 # TODO ajustar os valores 
@@ -53,7 +53,7 @@ BIG_BLIND = 100 # valor do big blind
 SMALL_BLIND = 50 # valor do small blind
 
 # Tamanho da tela
-WIDTH, HEIGHT = 1800, 960 # Mudei 1700, 860 
+WIDTH, HEIGHT = 1700, 960 # Mudei 1700, 860 
 #WIDTH, HEIGHT = 1920, 1080 # (1920x1080 pra tela cheia)
 
 # tela de vitoria
@@ -220,7 +220,7 @@ player_rect = pygame.Rect(table_rect.left - 130 - DISTANCIA_MESA_D_USUARIO, HEIG
 player_chips_bet_rect = pygame.Rect(table_rect.midleft[0]  + DISTANCIA_MESA_D_USUARIO*2, player_rect.topright[1],100,50) # TODO ver tamanho
 
 # Bot
-bot_rect = pygame.Rect(table_rect.right , HEIGHT // 2 - 50, 200, 100) # TODO ver tamanho
+bot_rect = pygame.Rect(table_rect.right , HEIGHT // 2 - 50, 150, 50) # TODO ver tamanho
 bot_chips_bet_rect = pygame.Rect(table_rect.midright[0] - DISTANCIA_MESA_D_USUARIO*2 - 100, bot_rect.midleft[1]- 25,100,50) # TODO ver tamanho
 
 # Pote
@@ -239,6 +239,16 @@ baralho_pos = (table_rect.centerx + 100, dealer_rect.left - 200)
 jarda = pygame.image.load("img/jarda.png").convert_alpha()
 jarda = pygame.transform.scale(jarda, (150,150)) # TODO ver tamanho
 jarda_pos = (player_rect.centerx - 65 - DISTANCIA_MESA_D_USUARIO, player_rect.centery - 150 + DISTANCIA_MESA_D_USUARIO)
+
+# robo
+if BOT_RECONHER:
+    robo = pygame.image.load("img/webcam.png").convert_alpha()
+else:
+    robo = pygame.image.load("img/robo.png").convert_alpha()
+robo = pygame.transform.scale(robo, (190,190)) # TODO ver tamanho
+
+robo_pos = (bot_rect.centerx - 90 - DISTANCIA_MESA_D_USUARIO, bot_rect.centery - 190 + DISTANCIA_MESA_D_USUARIO)
+
 partida = True
 
 # Jogo
@@ -752,7 +762,7 @@ def acao_bot(houve_aposta): # TODO acho que esta certo
 
 def desenhar_interface():
     screen.fill((0, 100, 0))
-    global vencedor_rodada, mostra_vencedor
+    global vencedor_rodada, mostra_vencedor, grade
     # Mesa
     pygame.draw.ellipse(screen, GREEN, table_rect)
 
@@ -807,9 +817,9 @@ def desenhar_interface():
     screen.blit(texto_input, (input_rect.x + 5, input_rect.y + 10))
 
     # Bot (IA)
+
     pygame.draw.rect(screen, BOT_COLOR, bot_rect)
-    text = "Bot " + ("com" if BOT_RECONHER else "sem") + "\nreconhecimento\nfacial"
-    draw_multiline_text(text, WHITE, bot_rect, screen)
+    screen.blit(robo, robo_pos)
     draw_multiline_text(f"{int(bot.fichas)}\nAposta: {bot.aposta}", WHITE, bot_chips_bet_rect, screen)
 
     # Baralho
@@ -1023,7 +1033,7 @@ carta_posicoes_player = [pygame.Vector2(baralho_pos) for _ in range(2)]
 cartas_player_alvos = [
     pygame.Vector2(
         player_rect.midbottom[0] + DISTANCIA_MESA_D_USUARIO - i*(114+DISTANCIA_MESA_D_USUARIO),
-        bot_rect.bottom + DISTANCIA_MESA_D_USUARIO
+        player_rect.bottom + DISTANCIA_MESA_D_USUARIO
     )
     for i in range(2)
 ]
