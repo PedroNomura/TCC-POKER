@@ -53,7 +53,7 @@ BIG_BLIND = 100 # valor do big blind
 SMALL_BLIND = 50 # valor do small blind
 
 # Tamanho da tela
-WIDTH, HEIGHT = 1700, 960 # Mudei 1700, 860 
+WIDTH, HEIGHT = 1800, 960 # Mudei 1700, 860 
 #WIDTH, HEIGHT = 1920, 1080 # (1920x1080 pra tela cheia)
 
 # tela de vitoria
@@ -210,7 +210,14 @@ clock = pygame.time.Clock()
 running = True
 
 # Mesa
-table_rect = pygame.Rect(WIDTH // 2 - 600, HEIGHT // 2 - 250, WIDTH - 500, HEIGHT - 460) # TODO ver tamanho porem se mexer fode logo cuidado
+#table_rect = pygame.Rect(WIDTH // 2 - 600, HEIGHT // 2 - 250, WIDTH - 500, HEIGHT - 460) # TODO ver tamanho porem se mexer fode logo cuidado
+tamanho_mesa = (WIDTH * 0.7, HEIGHT * 0.6)
+table_rect = pygame.Rect(
+    (WIDTH - tamanho_mesa[0]) // 2,
+    (HEIGHT - tamanho_mesa[1]) // 2,
+    tamanho_mesa[0],
+    tamanho_mesa[1]
+)
 
 # Dealer
 dealer_rect = pygame.Rect(WIDTH // 2 - 50, table_rect.bottom + DISTANCIA_MESA_D_USUARIO, 100, 50) 
@@ -416,6 +423,9 @@ def desenhar_tela_vitoria():
         texto_cartas = f"Ambos tinham: {jogo_vencedor}"
         label_cartas = font_media.render(texto_cartas, True, BLACK)
         screen.blit(label_cartas, (WIDTH // 2 - label_cartas.get_width() // 2, 200))
+        texto_pote = f"Dividiram o pote de {vencedor_pote} fichas!"
+        label_pote = font_media.render(texto_pote, True, BLACK)
+        screen.blit(label_pote, (WIDTH // 2 - label_pote.get_width() // 2, 170))
 
     # Mensagem para continuar
     font_pequena = pygame.font.SysFont("Arial", 22)
@@ -526,7 +536,7 @@ def fim_rodada(perdedor=None):
     if perdedor != None:
     # print pro jogada via terminal
         print(f"\nperdedor {perdedor.nome}")
-        log_mensagem(f"{perdedor.nome.upper()} foi perdedor {f'com {perdedor.cartas}'if perdedor.nome.lower() == 'voce' else ''}")
+        log_mensagem(f"{perdedor.nome.upper()} foi perdedor com {perdedor.cartas}")
     else:
         print("\nEMPATE")
         log_mensagem("EMPATE")
@@ -883,11 +893,10 @@ def processar_eventos():
                 try:
                     valor = int(input_texto)
                     while valor < aposta_minima:
-                        input_texto = f"Min {aposta_minima}"
                         valor = int(input_texto)
                     acao = "bet"
                     espera_jogador = False
-                    input_texto = "" if aposta_minima == 0 else f"Min {aposta_minima}"
+                    input_texto = ""
                 except:
                     print("Valor inválido")
 
@@ -942,7 +951,6 @@ def jogadas(jogador1, jogador2):
     
     while not rodada_finalizada:
         # Parte da analise de jogo
-        houve_check = False #
         for jogador_vez in ordem:
             # Exibir estado (para debug ou exibição futura)
             # Determinar ação
@@ -951,7 +959,7 @@ def jogadas(jogador1, jogador2):
 
             # all-in pass
             if jogador_vez.fichas == 0:
-                log_mensagem("(ALL IN)-----------------------------------------------")
+                pygame.time.delay(2500) 
                 acao = "call"
 
             elif jogador_vez.e_bot:
