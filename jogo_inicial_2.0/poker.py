@@ -17,20 +17,13 @@ hertz = 144
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-PESO_CONDIÇOES_JOGO = 3 # Testar e talvez rever
-BOT_RECONHER = True # ativar o reconhecimento (SOON) 
-MOSTRA_BOT = True # ativar pra ver as cartas do bot
+PESO_CONDIÇOES_JOGO = 5 # Testar e talvez rever
+BOT_RECONHER = False # ativar o reconhecimento (SOON) 
+MOSTRA_BOT = False # ativar pra ver as cartas do bot
 ITERACOES_MONTE_CARLO = 10000 # Preciso testar qual é um valor adequado
-VALOR_MINIMO_D = 50 # TODO ajustar os valores NOMURA
-VALOR_MINIMO_D_RAISE = 75 
-PESOS_EMOCAO = {
-    "happy": 2,
-    "sad": 1.5,
-    "angry": 1.5,
-    "fear": 1,
-    "disgust": 1,
-    "surprise": 1
-}
+VALOR_MINIMO_D = 50 # TODO ajustar os valores 
+VALOR_MINIMO_D_RAISE = 75
+passa = True
 
 # pré-carrega modelo de emoção
 preload_frame = np.zeros((100, 100, 3), dtype=np.uint8)
@@ -60,13 +53,11 @@ BIG_BLIND = 100 # valor do big blind
 SMALL_BLIND = 50 # valor do small blind
 
 # Tamanho da tela
-WIDTH, HEIGHT = 1700, 860 # TODO ver se ta bom # Mudei 1700, 860 
+WIDTH, HEIGHT = 1800, 960 # Mudei 1700, 860 
 #WIDTH, HEIGHT = 1920, 1080 # (1920x1080 pra tela cheia)
 
 # tela de vitoria
 mostra_vencedor = False
-tela_vitoria_inicio = 0
-duracao_vitoria = 1000  # duração em ms
 vencedor_rodada = None
 cartas_vencedor = None
 espera_vitoria = False
@@ -173,7 +164,7 @@ pygame.init()
 cap = cv2.VideoCapture(0)
 time.sleep(0.5)
 
-# chat que vez mas para quebrar o texto (auxiliar e opcional)
+# chat que fez mas para quebrar o texto (auxiliar e opcional)
 def draw_multiline_text(text, color, rect, surface, line_height=30):
     lines = text.split('\n')
     for i, line in enumerate(lines):
@@ -192,9 +183,9 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 69 ,0 )
 BLUE = (50,50,50)
-DEALER_COLOR = (200, 0, 0)
+DEALER_COLOR = (139, 0, 139)
 PLAYER_COLOR = (0, 100, 255)
-BOT_COLOR = (139, 0, 139)
+BOT_COLOR =  (200, 0, 0)
 CARD_COLOR = (255, 255, 255)
 
 # Fonte
@@ -225,7 +216,7 @@ table_rect = pygame.Rect(WIDTH // 2 - 600, HEIGHT // 2 - 250, 1200, 500) # TODO 
 dealer_rect = pygame.Rect(WIDTH // 2 - 50, table_rect.bottom + DISTANCIA_MESA_D_USUARIO, 100, 50) # TODO ver tamanho
 
 # Jogador
-player_rect = pygame.Rect(table_rect.left - 120 - DISTANCIA_MESA_D_USUARIO, HEIGHT // 2 - 25, 120, 50) # TODO ver tamanho
+player_rect = pygame.Rect(table_rect.left - 130 - DISTANCIA_MESA_D_USUARIO, HEIGHT // 2 - 25, 150, 50) # TODO ver tamanho
 player_chips_bet_rect = pygame.Rect(table_rect.midleft[0]  + DISTANCIA_MESA_D_USUARIO*2, player_rect.topright[1],100,50) # TODO ver tamanho
 
 # Bot
@@ -243,7 +234,7 @@ baralho = pygame.image.load(FUNDO).convert_alpha()
 baralho = pygame.transform.scale(baralho, (114,163)) # TODO ver tamanho
 baralho_pos = (table_rect.centerx + 100, dealer_rect.left - 200)
 
-# Jarda TODO da pra por a camera (seria foda)
+# Jarda
 
 jarda = pygame.image.load("img/jarda.png").convert_alpha()
 jarda = pygame.transform.scale(jarda, (150,150)) # TODO ver tamanho
@@ -252,7 +243,8 @@ partida = True
 
 # Jogo
 def pre_flop():
-    global pote, e_pre_flop
+    global pote, e_pre_flop, chegou_showdown
+    chegou_showdown = False
     e_pre_flop = True
     # paga os SB e BB
     pote += jogador.paga(jogador.blind)
@@ -310,11 +302,6 @@ def flop():
     log_mensagem("(FLOP)-------------------------------------------------")
 
 
-    # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-    # if mostra_bot:
-    #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-    # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
-
 
 # posicao das cartas do bot pra animacao
 carta_posicoes_bot = [pygame.Vector2(baralho_pos) for _ in range(2)]
@@ -341,11 +328,6 @@ def turn():
     print("(",pote,") mesa:",cartas_mesa,"\n")
     log_mensagem("(TURN)-------------------------------------------------")
 
-    # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-    # if mostra_bot:
-    #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-    # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
-
 
 def river():
     # da a carta do river
@@ -362,10 +344,6 @@ def river():
     print("(",pote,") mesa:",cartas_mesa,"\n")
     log_mensagem("(RIVER)------------------------------------------------")
 
-    # log_mensagem(f"Jogador ({int(jogador.fichas)}): {jogador.cartas}")
-    # if mostra_bot:
-    #     log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
-    # log_mensagem(f"Mesa ({int(pote)}): {cartas_mesa}")
 
 tipo_mao = {
     0: "HIGHCARD",
@@ -387,32 +365,56 @@ biblis = {
         'K': Rank.KING, 'S': Suit.SPADE, 'C':Suit.CLUB, 'H': Suit.HEART, 'D' : Suit.DIAMOND
 }
 
+vencedor_nome = ""
+vencedor_cartas = []
+vencedor_pote = 0
+jogo_vencedor = ""
+chegou_showdown = False
+
 def desenhar_tela_vitoria():
-    # Fundo semi-transparente
     s = pygame.Surface((WIDTH, HEIGHT))
     s.set_alpha(50)
     s.fill((0, 0, 0))
     screen.blit(s, (0, 0))
 
-    # Caixa central
-    box_width, box_height = 600, 200
-    box_rect = pygame.Rect(WIDTH//2 - box_width//2, 200 - box_height//2, box_width, box_height)
-    pygame.draw.rect(screen, (0, 255, 255), box_rect)
+    box_width, box_height = 680, 260
+    box_rect = pygame.Rect(WIDTH // 2 - box_width // 2, 200 - box_height // 2, box_width, box_height)
+    pygame.draw.rect(screen, (255, 247, 20), box_rect)
     pygame.draw.rect(screen, BLACK, box_rect, 5)
 
-    # Texto vencedor
     font_grande = pygame.font.SysFont("Arial", 40, bold=True)
-    texto_altura = 250 - box_height//2  # controle da altura do texto
-    if vencedor_rodada:
-        texto_vencedor = f"{vencedor_rodada.nome.upper()} VENCEU!"
-    else:
-        texto_vencedor = "EMPATE!"
-    label = font_grande.render(texto_vencedor, True, BLACK)
-    label_rect = label.get_rect(center=(WIDTH//2, texto_altura))
-    screen.blit(label, label_rect)
-        
-def verifica_perdedor():
+    font_media = pygame.font.SysFont("Arial", 28, bold=True)
 
+    texto_vencedor = f"{vencedor_nome.upper()} VENCEU!" if vencedor_nome != "Empate" else "EMPATE!"
+    label = font_grande.render(texto_vencedor, True, BLACK)
+    label_rect = label.get_rect(center=(WIDTH // 2, 110))
+    screen.blit(label, label_rect)
+
+    if vencedor_nome != "Empate":
+        # Mostra informações do vencedor
+        texto_cartas = (
+            f"{'Bot' if vencedor_nome.lower() == 'bot' else 'Jogador'} tinha: {jogo_vencedor} com {vencedor_cartas}"
+            if chegou_showdown
+            else f"{'Jogador' if vencedor_nome.lower() == 'bot' else 'Bot'} desistiu"
+        )
+        label_cartas = font_media.render(texto_cartas, True, BLACK)
+        screen.blit(label_cartas, (WIDTH // 2 - label_cartas.get_width() // 2, 200))
+        texto_pote = f"Ganhou o pote de {vencedor_pote} fichas!"
+        label_pote = font_media.render(texto_pote, True, BLACK)
+        screen.blit(label_pote, (WIDTH // 2 - label_pote.get_width() // 2, 170))
+    else:
+        texto_cartas = f"Ambos tinham: {jogo_vencedor}"
+        label_cartas = font_media.render(texto_cartas, True, BLACK)
+        screen.blit(label_cartas, (WIDTH // 2 - label_cartas.get_width() // 2, 200))
+
+    # Mensagem para continuar
+    font_pequena = pygame.font.SysFont("Arial", 22)
+    texto_continuar = font_pequena.render("Pressione [ESPAÇO] para continuar", True, BLACK)
+    screen.blit(texto_continuar, (WIDTH // 2 - texto_continuar.get_width() // 2, 290))
+
+def verifica_perdedor():
+    global chegou_showdown
+    chegou_showdown = True
     hand_jogador = HandParser([])
     hand_bot = HandParser([])
     for i in range(2):
@@ -428,9 +430,8 @@ def verifica_perdedor():
         naipe = cartas_mesa[i][-1]
         hand_jogador += [(biblis[valor],biblis[naipe])]
         hand_bot += [(biblis[valor],biblis[naipe])]
-    
 
-    print(f"\n\njogador {tipo_mao[hand_jogador.handenum]} com {sorted(jogador.cartas+cartas_mesa)}\nbot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas+cartas_mesa)}\n\n")
+    print(f"\njogador {tipo_mao[hand_jogador.handenum]} com {sorted(jogador.cartas+cartas_mesa)}\nbot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas+cartas_mesa)}")
     log_mensagem(f"Bot {tipo_mao[hand_bot.handenum]} com {sorted(bot.cartas)}")
     if hand_jogador == hand_bot:
         return None
@@ -442,24 +443,18 @@ def verifica_perdedor():
 
 # caso perdedor seja None indica que chegou ao showdown e precisa verificar quem ganha, se não perdedor foi quem deu fold
 def fim_rodada(perdedor=None):
-    global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux, jarda
+    global cartas_deck, cartas_mesa, pote, jogador, bot, pote_aux, jarda, passa
     global mostra_vencedor, tela_vitoria_inicio, vencedor_rodada, cartas_vencedor
-
+    global vencedor_nome, vencedor_cartas, vencedor_pote, jogo_vencedor,chegou_showdown
+    passa = False
     
     jarda = pygame.image.load(random.choice(["img/jarda.png","img/joao.png","img/nomura.png","img/victor.png"])).convert_alpha()
     jarda = pygame.transform.scale(jarda, (150,150)) # TODO ver tamanho
 
-    log_mensagem(f"Bot ({int(bot.fichas)}): {bot.cartas}")
     log_mensagem(f"Mesa ({int(pote)}): {sorted(cartas_mesa)}")
 
     # caso venha None precisa verificar
     if perdedor == None:
-        # Mostrar cartas do bot na posição atual
-        for i in enumerate(img_cartas_bot):
-            for i in range(2):
-                img = pygame.image.load(f"img/cards/{bot.cartas[i]}.png")
-                img = pygame.transform.scale(img, (114,163)) # TODO ver tamanho da carta
-                img_cartas_bot[i] = img
         perdedor = verifica_perdedor()
     
     if perdedor == bot:
@@ -468,6 +463,36 @@ def fim_rodada(perdedor=None):
         vencedor_rodada = bot
     else:
         vencedor_rodada = None
+
+    if vencedor_rodada:
+        vencedor_nome = vencedor_rodada.nome
+        vencedor_cartas = vencedor_rodada.cartas.copy()
+        vencedor_pote = pote
+        hand_jogador = HandParser([])
+        if chegou_showdown:
+            for i in range(2):
+                valor = vencedor_rodada.cartas[i][:-1]
+                naipe = vencedor_rodada.cartas[i][-1]
+                hand_jogador += [(biblis[valor],biblis[naipe])]
+            for i in range(len(cartas_mesa)):
+                valor = cartas_mesa[i][:-1]
+                naipe = cartas_mesa[i][-1]
+                hand_jogador += [(biblis[valor],biblis[naipe])]
+            jogo_vencedor = tipo_mao[hand_jogador.handenum]
+    else:
+        vencedor_nome = "Empate"
+        vencedor_cartas = []
+        vencedor_pote = pote
+        hand_jogador = HandParser([])
+        for i in range(2):
+                valor = jogador.cartas[i][:-1]
+                naipe = jogador.cartas[i][-1]
+                hand_jogador += [(biblis[valor],biblis[naipe])]
+        for i in range(len(cartas_mesa)):
+            valor = cartas_mesa[i][:-1]
+            naipe = cartas_mesa[i][-1]
+            hand_jogador += [(biblis[valor],biblis[naipe])]
+        jogo_vencedor = tipo_mao[hand_jogador.handenum]
 
     mostra_vencedor = True
     tela_vitoria_inicio = pygame.time.get_ticks()
@@ -490,10 +515,10 @@ def fim_rodada(perdedor=None):
     pote_aux = 0
     if perdedor != None:
     # print pro jogada via terminal
-        print(f"\nperdedor {perdedor.nome}\n")
-        log_mensagem(f"{perdedor.nome.upper()} foi perdedor")
+        print(f"\nperdedor {perdedor.nome}")
+        log_mensagem(f"{perdedor.nome.upper()} foi perdedor {f'com {perdedor.cartas}'if perdedor.nome.lower() == 'voce' else ''}")
     else:
-        print("\nEMPATE\n")
+        print("\nEMPATE")
         log_mensagem("EMPATE")
     
 
@@ -523,11 +548,6 @@ def fim_rodada(perdedor=None):
     cartas_player_movendo[:] = [True, True]
     carta_posicoes_mesa[:] = [pygame.Vector2(baralho_pos) for _ in range(5)]
     cartas_mesa_movendo[:] = [True,True,True,True,True]
-
-    # print pro jogada via terminal
-    # print(f"bot é {"BB" if bot.blind == BIG_BLIND else "SB"}")
-    # print(f"jogador é {"BB" if jogador.blind == BIG_BLIND else "SB"}")
-
 
 def pegar_emocao_dominante_webcam(cap, duracao=5, limiar=60):
     if not cap.isOpened():
@@ -634,12 +654,11 @@ def monte_carlo():
         for j in range(5-len(MC_mesa)):
             MC_mesa.append(MC_deck.pop())
         MC_vitorias_bot += MC_verifica_perdedor(MC_cartas_jogador, MC_mesa)
-        
-
-    print("\n\nVITORIAS BOT: ", MC_vitorias_bot, "\n\n")
     return (MC_vitorias_bot/ITERACOES_MONTE_CARLO)
 
 def CF_proporcao_fichas():
+    if jogador.fichas == 0 or bot.fichas == 0:  # Evita divisão por zero
+        return -PESO_CONDIÇOES_JOGO
     if bot.fichas / jogador.fichas <= 0.5:
         return -PESO_CONDIÇOES_JOGO
     elif bot.fichas / jogador.fichas >= 2:
@@ -661,7 +680,6 @@ def analise_jogo():
     # Cp: Se houve check do jogador
     if houve_check:
         valor_analise_jogo += PESO_CONDIÇOES_JOGO
-
     return valor_analise_jogo
 
 
@@ -692,7 +710,6 @@ def formula_d():
 
     if BOT_RECONHER:
         probs = pegar_emocao_dominante_webcam(cap, duracao=3, limiar=50)
-        print("Probabilidades detectadas:", probs)
         emocoes_detectadas = [emo for emo, prob in probs.items() if prob > 0]
         if len(emocoes_detectadas) == 1:
             maior_emocao = emocoes_detectadas[0]
@@ -708,8 +725,12 @@ def formula_d():
     valor_analise_jogo = analise_jogo()
     valor_d = mt + valor_emocao + valor_analise_jogo
 
+    print(f"Chance do MC: {mt:.2f}%")
+    print(f"Análise do jogo: {valor_analise_jogo:.2f}")
+    print(f"Valor final de D é {valor_d:.2f}")
+
     if MOSTRA_BOT:
-        log_mensagem(f"Chance do Monte Carlo: {mt:.2f}%")
+        log_mensagem(f"Chance do MC: {mt:.2f}%")
         log_mensagem(f"Análise do jogo: {valor_analise_jogo:.2f}")
         log_mensagem(f"Valor final de D é {valor_d:.2f}")
 
@@ -804,11 +825,11 @@ def desenhar_interface():
 
     if mostra_vencedor:
         desenhar_tela_vitoria()
-        # verifica se já passou a duração
-        if pygame.time.get_ticks() - tela_vitoria_inicio > duracao_vitoria:
+
+        if passa:
+            
             mostra_vencedor = False
             vencedor_rodada = None
-
     # Cartas do jogador e mesa
     if img_cartas_jogador:
         sempre_cartas_mao()
@@ -893,7 +914,6 @@ def acao_jogador():
         clock.tick(hertz)
     return acao, valor
 
-
 alerta_aposta = False
 houve_check = False
 
@@ -914,9 +934,6 @@ def jogadas(jogador1, jogador2):
         houve_check = False #
         for jogador_vez in ordem:
             # Exibir estado (para debug ou exibição futura)
-            print(f"\n{jogador_vez.nome} ({'BOT' if jogador_vez.e_bot else 'JOGADOR'})")
-            print(f"Fichas: {jogador_vez.fichas}, Aposta atual: {jogador_vez.aposta}, Pote: {pote}")
-
             # Determinar ação
             if jogador1.aposta != jogador2.aposta:
                 alerta_aposta = True
@@ -931,14 +948,12 @@ def jogadas(jogador1, jogador2):
             else:
                 acao, valor = acao_jogador()
 
-            
             # Tratar ação
             if acao == "fold":
                 print(f"{jogador_vez.nome} desistiu.")
-                log_mensagem(f"{jogador_vez.nome} desistiu.")
+                log_mensagem(f"{jogador_vez.nome} desistiu. (fold)")
                 pote += pote_aux
                 pote_aux = 0
-                perdedor = jogador_vez
                 return jogador_vez # fim da rodada
 
             elif acao == "check":
@@ -947,7 +962,7 @@ def jogadas(jogador1, jogador2):
                 if jogador_vez.aposta == maior_aposta:
                     print(f"{jogador_vez.nome} deu check.")
                     log_mensagem(f"{jogador_vez.nome} passou a vez. (check)")
-                    houve_check = True # Parte da analise de jogo
+
             
             elif acao == "call":
                 maior_aposta = max(jogador1.aposta, jogador2.aposta)
@@ -1085,7 +1100,7 @@ while running:
     mouse_pressionado = pygame.mouse.get_pressed()[0]
 
     # distribui as cartas e o pote
-    if fase == "inicio":
+    if fase == "inicio" and passa:
         if jogador.fichas == 0 or bot.fichas == 0: # TODO indica que houve allin e precisa de tela de vitoria avassaladora de alguem 
             restart()
         pre_flop()
@@ -1149,6 +1164,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                grade = not grade
+            if event.key == pygame.K_SPACE:
+                passa = not passa
 
     # Atualizar tela
     pygame.display.flip()
