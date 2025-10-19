@@ -9,6 +9,7 @@ from deepface import DeepFace
 import numpy as np
 
 # pra rodar precisa do especificamente do python 3.10 e instalar tf-keras para o reconhecimento facial
+# pra fazer as planilhas precisa executar "py poker.py >> saida_com.txt" no terminal e depois executar pra_planilhas_com.py
 
 # TODO arrumar a travada que o reconhecimento da (IMPOSSIVEL)
 # TODO revisar codigo/bugs (VERY SOON)
