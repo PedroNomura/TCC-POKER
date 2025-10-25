@@ -2,13 +2,12 @@ import pandas as pd
 import re
 import io
 
-def parse_log_by_play_v4(log_data):
+def parse_log_by_play_v5(log_data):
     """
-    Processa o log do jogo linha por linha (V4).
+    Processa o log do jogo linha por linha (V5).
     
-    Adiciona a captura de dados de emoção no formato:
-    L(f): {nome_emocao} - {porcentagem}% (Impacto: {valor_impacto})
-    que aparece ANTES do bloco 'Chance do MC:'.
+    CORRIGE os padrões de regex para 'Análise' e 'Valor final'
+    para funcionar com o novo formato de log ('An├ílise' e 'D ├®').
     """
     
     all_plays_data = []
@@ -21,21 +20,10 @@ def parse_log_by_play_v4(log_data):
     current_board = None
     current_street = None
     
-    # --- Buffers de Análise e Resultado (serão aplicados depois) ---
-    # (NOVO) Buffers para Emoção
-    temp_emocao_nome = None
-    temp_emocao_pct = None
-    temp_emocao_impacto = None
-    
-    # Buffers de Análise (do V3)
-    temp_mc = None
-    temp_analise = None
-    temp_valor = None
-    
-    # Buffers de Resultado (do V3)
-    vencedor_da_mao = None
-    jogador_mao_final = None
-    bot_mao_final = None
+    # --- Buffers de Análise e Resultado ---
+    temp_emocao_nome, temp_emocao_pct, temp_emocao_impacto = None, None, None
+    temp_mc, temp_analise, temp_valor = None, None, None
+    vencedor_da_mao, jogador_mao_final, bot_mao_final = None, None, None
 
     # --- Expressões Regulares (Regex) ---
     player_start_pattern = re.compile(r"\( (\d+\.\d+) \) jogador: (\[.*?\])")
@@ -43,15 +31,18 @@ def parse_log_by_play_v4(log_data):
     board_pattern = re.compile(r"mesa: (\[.*?\])")
     action_pattern = re.compile(r"^(Voce|Bot) (.*?)\.?(\s*\(.+?\))?$")
     
-    # (NOVO) Regex para Emoção
     emotion_pattern = re.compile(r"L\(f\): (.*?) - ([\d\.]+)% \(Impacto: (-?[\d\.]+)\)")
     
-    # Regex de Análise
-    analysis_mc_pattern = re.compile(r"Chance do MC: (\d+\.\d+)%")
-    analysis_jogo_pattern = re.compile(r"Anßlise do jogo: (-?\d+\.\d+)")
-    analysis_valor_pattern = re.compile(r"Valor final de D Ú (-?\d+\.\d+)")
+    # --- (CORREÇÃO 2) Regex de Análise (mais flexível) ---
+    # Captura 'Anßlise', 'An├ílise', etc.
+    analysis_jogo_pattern = re.compile(r"An.*?lise do jogo: (-?[\d\.]+)")
     
-    # Regex de Resultado
+    analysis_mc_pattern = re.compile(r"Chance do MC: (\d+\.\d+)%")
+    
+    # --- (CORREÇÃO 3) Regex do Valor Final (mais flexível) ---
+    # Captura 'D Ú', 'D -', 'D ├®', etc.
+    analysis_valor_pattern = re.compile(r"Valor final de D .*?(-?[\d\.]+)$")
+    
     hand_type_pattern = re.compile(r"^(jogador|bot) (.*?) com")
     perdedor_pattern = re.compile(r"perdedor (Voce|Bot)")
     empate_pattern = re.compile(r"EMPATE")
@@ -64,26 +55,20 @@ def parse_log_by_play_v4(log_data):
             continue
 
         # --- Lógica de atribuição de Análise Pendente ---
-        # (ATUALIZADO) Verifica se a linha NÃO é parte do bloco de análise/emoção
         is_analysis_line = (emotion_pattern.search(line) or 
                             analysis_mc_pattern.search(line) or 
                             analysis_jogo_pattern.search(line) or 
                             analysis_valor_pattern.search(line))
 
-        # Se 'temp_valor' (o último item da análise) foi definido e
-        # a linha atual NÃO é uma linha de análise, aplicamos tudo.
         if temp_valor is not None and not is_analysis_line:
-            if all_plays_data: # Se houver alguma jogada para anexar
-                # Aplica Emoção
+            if all_plays_data: 
                 all_plays_data[-1]['Emocao_Detectada'] = temp_emocao_nome
                 all_plays_data[-1]['Emocao_Porcentagem'] = temp_emocao_pct
                 all_plays_data[-1]['Emocao_Impacto'] = temp_emocao_impacto
-                # Aplica Análise
                 all_plays_data[-1]['Chance_MC'] = temp_mc
                 all_plays_data[-1]['Analise_Jogo'] = temp_analise
                 all_plays_data[-1]['Valor_Final_D_U'] = temp_valor
             
-            # Limpa TODOS os buffers de análise
             temp_emocao_nome, temp_emocao_pct, temp_emocao_impacto = None, None, None
             temp_mc, temp_analise, temp_valor = None, None, None
 
@@ -211,11 +196,10 @@ def parse_log_by_play_v4(log_data):
     
     df = pd.DataFrame(all_plays_data)
     
-    # (ATUALIZADO) Define a ordem final das colunas
     columns_order = [
         'Hand_ID', 'Play_ID_in_Hand', 'Street', 'Actor', 'Action',
         'Jogador_Cartas', 'Bot_Cartas', 'Board_Cards',
-        'Emocao_Detectada', 'Emocao_Porcentagem', 'Emocao_Impacto', # Novas Colunas
+        'Emocao_Detectada', 'Emocao_Porcentagem', 'Emocao_Impacto', 
         'Chance_MC', 'Analise_Jogo', 'Valor_Final_D_U',
         'Jogador_Mao_Final', 'Bot_Mao_Final', 'Vencedor_da_Mao'
     ]
@@ -229,31 +213,33 @@ def parse_log_by_play_v4(log_data):
     
     return df
 
-# --- Execução Principal ---
+# --- Execução Principal (Corrigida) ---
 try:
+    # O nome do arquivo que você especificou no seu código
     input_filename = 'saida_com.txt' 
     with open(input_filename, 'r', encoding='utf-8') as f:
         log_content = f.read()
     
-    # Limpa os marcadores 
-    cleaned_log = re.sub(r"\\s*", "", log_content)
+    # (CORREÇÃO 1) Removida a linha 'cleaned_log' que quebrava o script.
+    # Usamos o 'log_content' diretamente.
 
-    df_por_jogada = parse_log_by_play_v4(cleaned_log)
+    df_por_jogada = parse_log_by_play_v5(log_content)
     
-    csv_filename = 'analise_poker_por_jogada_com.csv'
-    excel_filename = 'analise_poker_por_jogada_com.xlsx'
+    # Novos nomes de arquivo
+    csv_filename = 'analise_poker_por_jogada_v5.csv'
+    excel_filename = 'analise_poker_por_jogada_v5.xlsx'
     
     df_por_jogada.to_csv(csv_filename, index=False, sep=';', decimal=',')
     df_por_jogada.to_excel(excel_filename, index=False, engine='openpyxl')
 
-    print(f"Script V4 (com Emoção) executado com sucesso.")
+    print(f"Script V5 (com Emoção) executado com sucesso.")
     print(f"Arquivos gerados: '{csv_filename}' e '{excel_filename}'")
     
-    print("\nAmostra das primeiras 10 linhas (V4):")
-    # Mostra o DataFrame com as novas colunas (que estarão vazias <NA>)
+    print("\nAmostra das primeiras 10 linhas (V5 - dados de emoção devem aparecer):")
     print(df_por_jogada.head(10).to_markdown(index=False, numalign="left", stralign="left"))
 
 except FileNotFoundError:
     print(f"ERRO: O arquivo '{input_filename}' não foi encontrado.")
+    print("Por favor, certifique-se de que o seu novo log (com emoções) está salvo como 'saida_com.txt' no mesmo diretório do script.")
 except Exception as e:
-    print(f"Ocorreu um erro ao processar o log (V4): {e}")
+    print(f"Ocorreu um erro ao processar o log (V5): {e}")

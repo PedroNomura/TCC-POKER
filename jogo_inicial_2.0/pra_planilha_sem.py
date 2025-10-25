@@ -36,9 +36,14 @@ def parse_log_by_play(log_data):
     board_pattern = re.compile(r"mesa: (\[.*?\])")
     action_pattern = re.compile(r"^(Voce|Bot) (.*?)\.?(\s*\(.+?\))?$")
     
-    analysis_mc_pattern = re.compile(r"Chance do MC: (\d+\.\d+)%")
-    analysis_jogo_pattern = re.compile(r"Anßlise do jogo: (-?\d+\.\d+)")
-    analysis_valor_pattern = re.compile(r"Valor final de D Ú (-?\d+\.\d+)")
+    # <--- CORREÇÃO 1: Adicionado \s* para capturar o espaço após os dois pontos.
+    analysis_mc_pattern = re.compile(r"Chance do MC: \s*(\d+\.\d+)%")
+    
+    # <--- CORREÇÃO 2: Alterado "Anßlise" para "An├ílise" e adicionado \s*
+    analysis_jogo_pattern = re.compile(r"An├ílise do jogo: \s*(-?\d+\.\d+)")
+    
+    # <--- CORREÇÃO 3: Alterado "D Ú" para "D ├®" e adicionado \s*
+    analysis_valor_pattern = re.compile(r"Valor final de D ├® \s*(-?\d+\.\d+)")
     
     hand_type_pattern = re.compile(r"^(jogador|bot) (.*?) com")
     perdedor_pattern = re.compile(r"perdedor (Voce|Bot)")
@@ -233,10 +238,9 @@ try:
     with open(input_filename, 'r', encoding='utf-8') as f:
         log_content = f.read()
     
-    # Limpar os marcadores de fonte do texto para o parser
-    cleaned_log = re.sub(r"\\s*", "", log_content)
-
-    df_por_jogada = parse_log_by_play(cleaned_log)
+    # <--- CORREÇÃO 4: Linha de "clean" removida.
+    # A limpeza agora é feita corretamente dentro do parser.
+    df_por_jogada = parse_log_by_play(log_content)
     
     # Novos nomes de arquivo para a v2
     csv_filename = 'analise_poker_por_jogada_sem.csv'
