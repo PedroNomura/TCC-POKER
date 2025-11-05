@@ -1,0 +1,579 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.10.0)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+( 4950.0 ) jogador: ['JD', '3D']
+( 4900.0 ) bot: ['AS', '10H'] 
+
+Voce pagou 50. (call)
+L(f): sad - 7.10% (Impacto: 3.20)
+Chance do MC: 65.01%
+Anßlise do jogo: 10.00
+Valor final de D Ú 78.21
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4800.0 ) jogador: ['JD', '3D']
+( 4800.0 ) bot: ['AS', '10H']
+( 400 ) mesa: ['6H', 'AC', '3S'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 15.48% (Impacto: -4.64)
+Chance do MC: 86.32%
+Anßlise do jogo: 10.00
+Valor final de D Ú 91.68
+Bot pagou 200. (call)
+( 4600.0 ) jogador: ['JD', '3D']
+( 4600.0 ) bot: ['AS', '10H']
+( 800 ) mesa: ['6H', 'AC', '3S', '7S'] 
+
+Voce deu check.
+L(f): sad - 8.71% (Impacto: 3.92)
+Chance do MC: 83.94%
+Anßlise do jogo: 0.00
+Valor final de D Ú 87.86
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4500.0 ) jogador: ['JD', '3D']
+( 4500.0 ) bot: ['AS', '10H']
+( 1000 ) mesa: ['6H', 'AC', '3S', '7S', 'QS'] 
+
+Voce deu check.
+L(f): angry - 13.96% (Impacto: 6.28)
+Chance do MC: 84.23%
+Anßlise do jogo: 0.00
+Valor final de D Ú 90.51
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 4400.0 ) jogador: ['QS', '8C']
+( 5450.0 ) bot: ['AS', 'QD'] 
+
+L(f): sad - 10.34% (Impacto: 4.65)
+Chance do MC: 63.50%
+Anßlise do jogo: 10.00
+Valor final de D Ú 78.15
+Bot pagou 50. (call)
+Voce deu check.
+( 4400.0 ) jogador: ['QS', '8C']
+( 5400.0 ) bot: ['AS', 'QD']
+( 200 ) mesa: ['6D', '10D', '7S'] 
+
+L(f): sad - 13.11% (Impacto: 5.90)
+Chance do MC: 50.13%
+Anßlise do jogo: 0.00
+Valor final de D Ú 56.03
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4300.0 ) jogador: ['QS', '8C']
+( 5300.0 ) bot: ['AS', 'QD']
+( 400 ) mesa: ['6D', '10D', '7S', 'JD'] 
+
+L(f): sad - 7.92% (Impacto: 3.57)
+Chance do MC: 56.09%
+Anßlise do jogo: 0.00
+Valor final de D Ú 59.65
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 4250.0 ) jogador: ['8D', '6C']
+( 5600.0 ) bot: ['7H', 'JS'] 
+
+Voce pagou 50. (call)
+L(f): fear - 20.58% (Impacto: 7.20)
+Chance do MC: 52.39%
+Anßlise do jogo: 10.00
+Valor final de D Ú 69.59
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4100.0 ) jogador: ['8D', '6C']
+( 5500.0 ) bot: ['7H', 'JS']
+( 400 ) mesa: ['10H', 'QC', 'KH'] 
+
+Voce deu check.
+L(f): angry - 33.52% (Impacto: 15.08)
+Chance do MC: 58.28%
+Anßlise do jogo: 0.00
+Valor final de D Ú 73.36
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 4000.0 ) jogador: ['10D', '2D']
+( 5850.0 ) bot: ['2C', 'KH'] 
+
+L(f): sad - 6.14% (Impacto: 2.76)
+Chance do MC: 50.85%
+Anßlise do jogo: 10.00
+Valor final de D Ú 63.61
+Bot pagou 50. (call)
+Voce deu check.
+( 4000.0 ) jogador: ['10D', '2D']
+( 5800.0 ) bot: ['2C', 'KH']
+( 200 ) mesa: ['10S', 'AD', 'QH'] 
+
+L(f): sad - 13.89% (Impacto: 6.25)
+Chance do MC: 57.39%
+Anßlise do jogo: 0.00
+Valor final de D Ú 63.64
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 3900.0 ) jogador: ['10D', '2D']
+( 5700.0 ) bot: ['2C', 'KH']
+( 400 ) mesa: ['10S', 'AD', 'QH', '10C'] 
+
+L(f): happy - 42.71% (Impacto: -12.81)
+Chance do MC: 60.04%
+Anßlise do jogo: 0.00
+Valor final de D Ú 47.23
+Bot deu check.
+Voce apostou 200. (bet)
+L(f): happy - 49.77% (Impacto: -14.93)
+Chance do MC: 60.81%
+Anßlise do jogo: 10.00
+Valor final de D Ú 55.88
+Bot pagou 200. (call)
+( 3700.0 ) jogador: ['10D', '2D']
+( 5500.0 ) bot: ['2C', 'KH']
+( 800 ) mesa: ['10S', 'AD', 'QH', '10C', '6S'] 
+
+L(f): sad - 9.68% (Impacto: 4.36)
+Chance do MC: 52.02%
+Anßlise do jogo: 0.00
+Valor final de D Ú 56.38
+Bot apostou 100. (bet)
+Voce apostou 200. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 51.39%
+Anßlise do jogo: 10.00
+Valor final de D Ú 31.39
+Bot desistiu.
+
+perdedor Bot
+( 4550.0 ) jogador: ['10S', 'KD']
+( 5300.0 ) bot: ['2S', '6D'] 
+
+Voce pagou 50. (call)
+L(f): angry - 9.04% (Impacto: 4.07)
+Chance do MC: 38.96%
+Anßlise do jogo: 10.00
+Valor final de D Ú 53.03
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4400.0 ) jogador: ['10S', 'KD']
+( 5200.0 ) bot: ['2S', '6D']
+( 400 ) mesa: ['AD', '2H', 'AS'] 
+
+Voce deu check.
+L(f): angry - 49.16% (Impacto: 22.12)
+Chance do MC: 61.26%
+Anßlise do jogo: 0.00
+Valor final de D Ú 83.38
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 4300.0 ) jogador: ['QS', '6H']
+( 5550.0 ) bot: ['4S', '3C'] 
+
+L(f): sad - 1.83% (Impacto: 0.82)
+Chance do MC: 38.84%
+Anßlise do jogo: 10.00
+Valor final de D Ú 49.66
+Bot desistiu.
+
+perdedor Bot
+( 4400.0 ) jogador: ['10D', 'QD']
+( 5450.0 ) bot: ['8H', '3C'] 
+
+Voce pagou 50. (call)
+L(f): happy - 20.74% (Impacto: -6.22)
+Chance do MC: 41.41%
+Anßlise do jogo: 10.00
+Valor final de D Ú 45.19
+Bot deu check.
+( 4350.0 ) jogador: ['10D', 'QD']
+( 5450.0 ) bot: ['8H', '3C']
+( 200 ) mesa: ['JS', '7H', '8C'] 
+
+Voce deu check.
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 66.89%
+Anßlise do jogo: 0.00
+Valor final de D Ú 36.89
+Bot deu check.
+( 4350.0 ) jogador: ['10D', 'QD']
+( 5450.0 ) bot: ['8H', '3C']
+( 200 ) mesa: ['JS', '7H', '8C', '9S'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 53.49%
+Anßlise do jogo: 10.00
+Valor final de D Ú 33.49
+Bot desistiu.
+
+perdedor Bot
+( 4450.0 ) jogador: ['AS', '4S']
+( 5400.0 ) bot: ['9C', '5S'] 
+
+L(f): angry - 11.49% (Impacto: 5.17)
+Chance do MC: 46.42%
+Anßlise do jogo: 10.00
+Valor final de D Ú 61.59
+Bot pagou 50. (call)
+Voce deu check.
+( 4450.0 ) jogador: ['AS', '4S']
+( 5350.0 ) bot: ['9C', '5S']
+( 200 ) mesa: ['10S', '4C', '8H'] 
+
+L(f): sad - 3.37% (Impacto: 1.52)
+Chance do MC: 29.72%
+Anßlise do jogo: 0.00
+Valor final de D Ú 31.24
+Bot deu check.
+Voce deu check.
+( 4450.0 ) jogador: ['AS', '4S']
+( 5350.0 ) bot: ['9C', '5S']
+( 200 ) mesa: ['10S', '4C', '8H', '6C'] 
+
+L(f): surprise - 8.00% (Impacto: -4.00)
+Chance do MC: 23.00%
+Anßlise do jogo: 0.00
+Valor final de D Ú 19.00
+Bot deu check.
+Voce deu check.
+( 4450.0 ) jogador: ['AS', '4S']
+( 5350.0 ) bot: ['9C', '5S']
+( 200 ) mesa: ['10S', '4C', '8H', '6C', 'KC'] 
+
+L(f): fear - 100.00% (Impacto: 35.00)
+Chance do MC: 11.14%
+Anßlise do jogo: 0.00
+Valor final de D Ú 46.14
+Bot deu check.
+Voce apostou 200. (bet)
+L(f): fear - 49.04% (Impacto: 17.16)
+Chance do MC: 11.17%
+Anßlise do jogo: 10.00
+Valor final de D Ú 38.33
+Bot desistiu.
+
+perdedor Bot
+( 4600.0 ) jogador: ['6S', '10S']
+( 5250.0 ) bot: ['4D', '3D'] 
+
+Voce pagou 50. (call)
+L(f): fear - 13.31% (Impacto: 4.66)
+Chance do MC: 42.70%
+Anßlise do jogo: 10.00
+Valor final de D Ú 57.36
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4450.0 ) jogador: ['6S', '10S']
+( 5150.0 ) bot: ['4D', '3D']
+( 400 ) mesa: ['5D', '2S', '7H'] 
+
+Voce apostou 200. (bet)
+L(f): fear - 100.00% (Impacto: 35.00)
+Chance do MC: 41.84%
+Anßlise do jogo: 10.00
+Valor final de D Ú 86.84
+Bot pagou 200. (call)
+( 4250.0 ) jogador: ['6S', '10S']
+( 4950.0 ) bot: ['4D', '3D']
+( 800 ) mesa: ['5D', '2S', '7H', '8D'] 
+
+Voce deu check.
+L(f): sad - 11.87% (Impacto: 5.34)
+Chance do MC: 36.64%
+Anßlise do jogo: 0.00
+Valor final de D Ú 41.98
+Bot deu check.
+( 4250.0 ) jogador: ['6S', '10S']
+( 4950.0 ) bot: ['4D', '3D']
+( 800 ) mesa: ['5D', '2S', '7H', '8D', '6D'] 
+
+Voce apostou 200. (bet)
+L(f): fear - 100.00% (Impacto: 35.00)
+Chance do MC: 96.66%
+Anßlise do jogo: 10.00
+Valor final de D Ú 141.66
+Bot pagou 200. (call)
+
+jogador ONEPAIR com ['10S', '2S', '5D', '6D', '6S', '7H', '8D']
+bot FLUSH com ['2S', '3D', '4D', '5D', '6D', '7H', '8D']
+
+perdedor Voce
+( 3950.0 ) jogador: ['AS', '3C']
+( 5900.0 ) bot: ['8S', '7C'] 
+
+L(f): sad - 2.54% (Impacto: 1.14)
+Chance do MC: 48.71%
+Anßlise do jogo: 10.00
+Valor final de D Ú 59.85
+Bot pagou 50. (call)
+Voce deu check.
+( 3950.0 ) jogador: ['AS', '3C']
+( 5850.0 ) bot: ['8S', '7C']
+( 200 ) mesa: ['4S', '8C', 'JH'] 
+
+L(f): happy - 13.91% (Impacto: -4.17)
+Chance do MC: 69.83%
+Anßlise do jogo: 0.00
+Valor final de D Ú 65.66
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 3900.0 ) jogador: ['9D', '2D']
+( 5950.0 ) bot: ['KS', '4H'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 55.26%
+Anßlise do jogo: 10.00
+Valor final de D Ú 35.26
+Bot desistiu.
+
+perdedor Bot
+( 3950.0 ) jogador: ['2D', '3D']
+( 5900.0 ) bot: ['8S', 'AH'] 
+
+L(f): happy - 20.20% (Impacto: -6.06)
+Chance do MC: 62.30%
+Anßlise do jogo: 10.00
+Valor final de D Ú 66.24
+Bot pagou 50. (call)
+Voce deu check.
+( 3950.0 ) jogador: ['2D', '3D']
+( 5850.0 ) bot: ['8S', 'AH']
+( 200 ) mesa: ['3C', 'JS', '2S'] 
+
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 52.91%
+Anßlise do jogo: 0.00
+Valor final de D Ú 22.91
+Bot deu check.
+Voce apostou 300. (bet)
+L(f): happy - 15.24% (Impacto: -4.57)
+Chance do MC: 53.34%
+Anßlise do jogo: 10.00
+Valor final de D Ú 58.77
+Bot pagou 300. (call)
+( 3650.0 ) jogador: ['2D', '3D']
+( 5550.0 ) bot: ['8S', 'AH']
+( 800 ) mesa: ['3C', 'JS', '2S', 'KD'] 
+
+L(f): sad - 3.10% (Impacto: 1.40)
+Chance do MC: 46.38%
+Anßlise do jogo: 0.00
+Valor final de D Ú 47.78
+Bot deu check.
+Voce apostou 300. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 47.00%
+Anßlise do jogo: 10.00
+Valor final de D Ú 27.00
+Bot desistiu.
+
+perdedor Bot
+( 4400.0 ) jogador: ['KS', '9C']
+( 5450.0 ) bot: ['KC', '2D'] 
+
+Voce pagou 50. (call)
+L(f): sad - 8.70% (Impacto: 3.91)
+Chance do MC: 49.21%
+Anßlise do jogo: 10.00
+Valor final de D Ú 63.12
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4250.0 ) jogador: ['KS', '9C']
+( 5350.0 ) bot: ['KC', '2D']
+( 400 ) mesa: ['JH', '4H', 'AH'] 
+
+Voce apostou 200. (bet)
+L(f): angry - 41.36% (Impacto: 18.61)
+Chance do MC: 38.25%
+Anßlise do jogo: 10.00
+Valor final de D Ú 66.86
+Bot pagou 200. (call)
+( 4050.0 ) jogador: ['KS', '9C']
+( 5150.0 ) bot: ['KC', '2D']
+( 800 ) mesa: ['JH', '4H', 'AH', '10H'] 
+
+Voce deu check.
+L(f): angry - 100.00% (Impacto: 45.00)
+Chance do MC: 34.30%
+Anßlise do jogo: 0.00
+Valor final de D Ú 79.30
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 3950.0 ) jogador: ['4D', '10C']
+( 5900.0 ) bot: ['6S', '2S'] 
+
+L(f): fear - 18.32% (Impacto: 6.41)
+Chance do MC: 42.34%
+Anßlise do jogo: 10.00
+Valor final de D Ú 58.75
+Bot pagou 50. (call)
+Voce deu check.
+( 3950.0 ) jogador: ['4D', '10C']
+( 5850.0 ) bot: ['6S', '2S']
+( 200 ) mesa: ['2C', '5C', '5H'] 
+
+L(f): angry - 0.30% (Impacto: 0.13)
+Chance do MC: 59.47%
+Anßlise do jogo: 0.00
+Valor final de D Ú 59.60
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 3900.0 ) jogador: ['7H', 'KS']
+( 5950.0 ) bot: ['2H', 'AH'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 15.77% (Impacto: -4.73)
+Chance do MC: 58.04%
+Anßlise do jogo: 10.00
+Valor final de D Ú 63.31
+Bot pagou 150. (call)
+( 3700.0 ) jogador: ['7H', 'KS']
+( 5800.0 ) bot: ['2H', 'AH']
+( 500 ) mesa: ['3S', '7D', '9S'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 44.55%
+Anßlise do jogo: 10.00
+Valor final de D Ú 24.55
+Bot desistiu.
+
+perdedor Bot
+( 4100.0 ) jogador: ['KC', 'QD']
+( 5750.0 ) bot: ['3D', '4H'] 
+
+L(f): fear - 21.00% (Impacto: 7.35)
+Chance do MC: 39.82%
+Anßlise do jogo: 10.00
+Valor final de D Ú 57.17
+Bot pagou 50. (call)
+Voce deu check.
+( 4100.0 ) jogador: ['KC', 'QD']
+( 5700.0 ) bot: ['3D', '4H']
+( 200 ) mesa: ['4S', '3H', '9D'] 
+
+L(f): happy - 41.68% (Impacto: -12.50)
+Chance do MC: 84.43%
+Anßlise do jogo: 0.00
+Valor final de D Ú 71.93
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 4000.0 ) jogador: ['KC', 'QD']
+( 5600.0 ) bot: ['3D', '4H']
+( 400 ) mesa: ['4S', '3H', '9D', '8C'] 
+
+L(f): fear - 34.10% (Impacto: 11.94)
+Chance do MC: 86.84%
+Anßlise do jogo: 0.00
+Valor final de D Ú 98.78
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 3950.0 ) jogador: ['2C', '3C']
+( 5900.0 ) bot: ['6S', 'QC'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 20.20% (Impacto: -6.06)
+Chance do MC: 52.80%
+Anßlise do jogo: 10.00
+Valor final de D Ú 56.74
+Bot pagou 150. (call)
+( 3750.0 ) jogador: ['2C', '3C']
+( 5750.0 ) bot: ['6S', 'QC']
+( 500 ) mesa: ['5D', '10S', '8C'] 
+
+Voce deu check.
+L(f): happy - 18.94% (Impacto: -5.68)
+Chance do MC: 37.21%
+Anßlise do jogo: 0.00
+Valor final de D Ú 31.53
+Bot deu check.
+( 3750.0 ) jogador: ['2C', '3C']
+( 5750.0 ) bot: ['6S', 'QC']
+( 500 ) mesa: ['5D', '10S', '8C', '7S'] 
+
+Voce apostou 200. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 35.07%
+Anßlise do jogo: 10.00
+Valor final de D Ú 15.07
+Bot desistiu.
+
+perdedor Bot
+( 4150.0 ) jogador: ['4H', '7C']
+( 5700.0 ) bot: ['9S', 'KH'] 
+
+L(f): fear - 12.20% (Impacto: 4.27)
+Chance do MC: 59.45%
+Anßlise do jogo: 10.00
+Valor final de D Ú 73.72
+Bot pagou 50. (call)
+Voce desistiu.
+
+perdedor Voce
+( 4100.0 ) jogador: ['2S', 'JD']
+( 5750.0 ) bot: ['AD', '7H'] 
+
+Voce pagou 50. (call)
+L(f): sad - 5.19% (Impacto: 2.34)
+Chance do MC: 60.87%
+Anßlise do jogo: 10.00
+Valor final de D Ú 73.21
+Bot apostou 100. (bet)
+Voce pagou 100. (call)
+( 3950.0 ) jogador: ['2S', 'JD']
+( 5650.0 ) bot: ['AD', '7H']
+( 400 ) mesa: ['3D', '6C', 'AC'] 
+
+Voce deu check.
+L(f): fear - 100.00% (Impacto: 35.00)
+Chance do MC: 82.83%
+Anßlise do jogo: 0.00
+Valor final de D Ú 117.83
+Bot apostou 100. (bet)
+Voce desistiu.
+
+perdedor Voce
+( 3850.0 ) jogador: ['10D', '6C']
+( 6000.0 ) bot: ['7S', 'KH'] 
+
+L(f): sad - 5.47% (Impacto: 2.46)
+Chance do MC: 57.87%
+Anßlise do jogo: 10.00
+Valor final de D Ú 70.33
+Bot pagou 50. (call)
+Voce deu check.
+( 3850.0 ) jogador: ['10D', '6C']
+( 5950.0 ) bot: ['7S', 'KH']
+( 200 ) mesa: ['5S', '2D', '8H'] 
+
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 42.24%
+Anßlise do jogo: 0.00
+Valor final de D Ú 12.24
+Bot deu check.
+Voce apostou 200. (bet)
+L(f): happy - 100.00% (Impacto: -30.00)
+Chance do MC: 42.41%
+Anßlise do jogo: 10.00
+Valor final de D Ú 22.41
+Bot desistiu.
+
+perdedor Bot
+( 4000.0 ) jogador: ['9C', '2S']
+( 5850.0 ) bot: ['2D', '3D'] 
+

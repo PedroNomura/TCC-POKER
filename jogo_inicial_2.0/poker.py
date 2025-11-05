@@ -18,11 +18,11 @@ hertz = 144
 velocidade = 500 # velocidade das animações 
 
 # variaveis do bot
-PESO_CONDIÇOES_JOGO = 5 # Testar e talvez rever
+PESO_CONDIÇOES_JOGO = 10 # Testar e talvez rever
 BOT_RECONHER = False # ativar o reconhecimento
 MOSTRA_BOT = False # ativar pra ver as cartas do bot
 ITERACOES_MONTE_CARLO = 10000 # Preciso testar qual é um valor adequado
-VALOR_MINIMO_D = 50 # TODO ajustar os valores 
+VALOR_MINIMO_D = 50
 VALOR_MINIMO_D_RAISE = 75
 passa = True
 
@@ -709,17 +709,17 @@ def calcula_aposta(): #TODO como o bot calcula a aposta
 
 def leitura_numeral(maior_emocao): # TODO rever os valores mas o bang do suprise não fica bom não
     if maior_emocao == "happy":
-        return -20
+        return -30
     elif maior_emocao == "sad":
-        return 35
+        return 45
     elif maior_emocao == "angry":
-        return 40
+        return 45
     elif maior_emocao == "fear":
-        return 25
+        return 35
     elif maior_emocao == "disgust":
-        return 50
+        return 40
     elif maior_emocao == "surprise":
-        return -40
+        return -50
     else:
         return 0
 
@@ -740,6 +740,7 @@ def formula_d():
             valor_emocao = leitura_numeral(maior_emocao) * (probs[maior_emocao] / 100)
         if MOSTRA_BOT:
             log_mensagem(f"L(f): {maior_emocao} - {probs[maior_emocao]:.2f}% (Impacto: {valor_emocao:.2f})")
+        print(f"L(f): {maior_emocao} - {probs[maior_emocao]:.2f}% (Impacto: {valor_emocao:.2f})")
     else:
         maior_emocao = "neutral"
         valor_emocao = 0

@@ -216,7 +216,7 @@ def parse_log_by_play_v5(log_data):
 # --- Execução Principal (Corrigida) ---
 try:
     # O nome do arquivo que você especificou no seu código
-    input_filename = 'saida_com.txt' 
+    input_filename = 'joao_com.txt' 
     with open(input_filename, 'r', encoding='utf-8') as f:
         log_content = f.read()
     
@@ -226,10 +226,10 @@ try:
     df_por_jogada = parse_log_by_play_v5(log_content)
     
     # Novos nomes de arquivo
-    csv_filename = 'analise_poker_por_jogada_v5.csv'
-    excel_filename = 'analise_poker_por_jogada_v5.xlsx'
+    csv_filename = 'analise_joao_com.csv'
+    excel_filename = 'analise_joao_com.xlsx'
     
-    df_por_jogada.to_csv(csv_filename, index=False, sep=';', decimal=',')
+    # df_por_jogada.to_csv(csv_filename, index=False, sep=';', decimal=',')
     df_por_jogada.to_excel(excel_filename, index=False, engine='openpyxl')
 
     print(f"Script V5 (com Emoção) executado com sucesso.")
