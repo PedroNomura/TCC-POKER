@@ -1,4 +1,5 @@
-# Decisão Estratégica no Pôquer com Inteligência Artificial Multimodal
+# Decisão Estratégica no Pôquer com IA baseada em Expressões Faciais, Simulações de Monte Carlo e análise do jogo
+
 
 Este projeto apresenta o desenvolvimento de uma Inteligência Artificial aplicada ao jogo de pôquer Texas Hold'em, focado na tomada de decisões em cenários de incerteza. O sistema integra cálculos probabilísticos avançados com algoritmos de visão computacional em tempo real, investigando o impacto da leitura do estado emocional do oponente na performance estratégica da IA.
 
