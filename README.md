@@ -30,9 +30,15 @@ Onde:
 
 Os limites de decisão resultantes desta equação determinam se o bot fará Call, Fold, Bet ou Check.
 
+<img width="732" height="545" alt="image" src="https://github.com/user-attachments/assets/cdc4b37d-1210-40d0-bb02-68695280427b" />
+
+
 ## Resultados e Validação
 
 O sistema foi submetido a um rigoroso processo de testes empíricos através de 120 partidas simuladas (60 com o módulo de reconhecimento facial ativo e 60 com o módulo inativo).
+
+<img width="822" height="439" alt="image" src="https://github.com/user-attachments/assets/eff61fea-d424-4ac6-86c2-4f8f43118eb8" />
+<br>
 
 A análise comparativa de desempenho demonstrada no artigo validou a hipótese central: a integração do reconhecimento facial foi o fator determinante para a lucratividade da IA. Nos testes de controle (leitura facial desativada), a IA obteve uma taxa de vitória de 45% e encerrou a simulação com saldo negativo de fichas (prejuízo). Quando o módulo de reconhecimento emocional foi ativado, a taxa de vitória subiu para 50%, e a IA reverteu completamente o cenário, terminando com lucro contra os mesmos oponentes.
 
